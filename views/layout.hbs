@@ -30,12 +30,23 @@
 
       <script>
         var createScene = function() {
-          // Create 3d Scene here
+          // Initialize Scene
           const scene = new BABYLON.Scene(engine);
+
+          // Camera
           const camera = new BABYLON.ArcRotateCamera("camera", -Math.PI / 2, Math.PI / 2.5, 3, new BABYLON.Vector3(0, 0, 0));
           camera.attachControl(canvas, true);
+
+          // Lighting
           const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0));
+
+          // Ground
+          const ground = BABYLON.MeshBuilder.CreateGround("ground", {width:10, height:10});
+
+          // Box
           const box = BABYLON.MeshBuilder.CreateBox("box", {});
+          box.position.y = 0.5;
+
           return scene;
         };
 
