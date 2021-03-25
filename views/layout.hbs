@@ -43,7 +43,11 @@
           camera.radius = 10; // Initialize the viewing angle distance
 
           camera.useAutoRotationBehavior = true;
+          camera.autoRotationBehavior.idleRotationSpeed = 0.2;
+
           camera.useFramingBehavior = true;
+          camera.framingBehavior.radiusScale = 2;
+
 
           // Lighting
           const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0));
@@ -69,7 +73,7 @@
           roofMat.diffuseTexture = new BABYLON.Texture("https://assets.babylonjs.com/environments/roof.jpg", scene);
           roof.material = roofMat;
 
-          // camera.parent = box;
+          camera.setTarget(box);
 
           return scene;
         };
