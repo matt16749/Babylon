@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "npm run babel-node && nodemon ./bin/www",
+    "start": "node ./bin/www",
+    "build": "npm run babel-node && nodemon ./bin/www",
     "babel-node": "./node_modules/.bin/babel src --out-dir public --presets=@babel/env"
   },
   "dependencies": {
