@@ -374,7 +374,7 @@
             height: 50
           });
           const groundMat = new BABYLON.StandardMaterial("groundMat");
-          groundMat.diffuseColor = new BABYLON.Color3(0, 1, 0);
+          groundMat.diffuseColor = BABYLON.Color3.FromHexString("#585E43")
           ground.material = groundMat;
 
           return ground;
