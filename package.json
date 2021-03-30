@@ -5,7 +5,7 @@
   "scripts": {
     "server": "node ./bin/www",
     "start": "npm run babel-node && npm run server",
-    "babel-node": "./node_modules/.bin/babel src --out-dir public --presets=@babel/env",
+    "babel-node": "babel src --out-dir public --presets=@babel/env",
     "start:dev": "nodemon --watch src --exec npm run babel-node && npm run start"
   },
   "dependencies": {
