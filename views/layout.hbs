@@ -394,23 +394,28 @@
           return ground;
         }
 
-        var createButton = function(tree, text, verticalOffset) {
+        var createButton = function(tree, text, verticalOffset, treesToHide) {
           // GUI
           var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
- 
+
           var button = BABYLON.GUI.Button.CreateSimpleButton("but1", text);
           button.width = "150px"
           button.height = "40px";
           button.color = theme.color;
           button.cornerRadius = 5;
           button.background = theme.background;
+          treesToHide.forEach((hideTree) => {
+            button.onPointerUpObservable.add(function() {
+              hideTree.setEnabled(false);
+            });
+          });
           button.onPointerUpObservable.add(function() {
-            tree.setEnabled(!tree.isEnabled());
+            tree.setEnabled(true);
           });
           button.top = verticalOffset;
           button.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
           button.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
-          advancedTexture.addControl(button); 
+          advancedTexture.addControl(button);
         }
 
         var createTooltip = function(mesh, scene, offsetX, offsetY, tooltipText) {
@@ -502,7 +507,7 @@
           rect1.thickness = theme.lineThickness;
           rect1.background = theme.background;
           tooltip.addControl(rect1);
-          rect1.linkWithMesh(mesh);   
+          rect1.linkWithMesh(mesh);
           rect1.linkOffsetY = -offset;
 
           {{!-- rect1.linkOffsetX = "60px"; --}}
@@ -521,7 +526,7 @@
           target.background = theme.background;
           target.linkOffsetY = 150 - offset;
           tooltip.addControl(target);
-          target.linkWithMesh(mesh);   
+          target.linkWithMesh(mesh);
 
           // line connecting target and tooltip
           var line = new BABYLON.GUI.Line();
@@ -530,12 +535,12 @@
           line.y2 = 20;
           line.linkOffsetY = -(offset-130);
           tooltip.addControl(line);
-          line.linkWithMesh(mesh); 
-          line.connectedControl = rect1;  
-        
+          line.linkWithMesh(mesh);
+          line.connectedControl = rect1;
+
           return scene;
         };
-        
+
         var createScene = function() {
           // TODO: Start here for initialization
 
@@ -640,6 +645,8 @@
           );
           tree1.position.x = 0
           tree1.position.y = 0
+          tree1.setEnabled(false);
+
 
           // Tree2
           var trunkHeight = 20;
@@ -681,6 +688,7 @@
           );
           tree2.position.x = 35
           tree2.position.y = 0
+          tree2.setEnabled(false);
 
           // Tree3
           var trunkHeight = 20;
@@ -723,6 +731,7 @@
           tree3.position.x = 70
           tree3.position.y = 0
           tree3.position.z = 35
+          tree3.setEnabled(false);
 
           // Tree4
           var trunkHeight = 20;
@@ -765,6 +774,7 @@
           tree4.position.x = 70;
           tree4.position.y = 0;
           tree4.position.z = -35;
+          tree4.setEnabled(false);
 
           camera.setTarget(tree1);
 
@@ -792,11 +802,11 @@
           createAttachedTooltip(tree4, scene, tree4Text); --}}
 
           // sample buttons
-          createButton(tree0, 'Tree 1', 0);
-          createButton(tree1, 'Tree 2', -50);
-          createButton(tree2, 'Tree 3', -100);
-          createButton(tree3, 'Tree 4', -150);
-          createButton(tree4, 'Tree 5', -200);
+          createButton(tree0, 'Tree 1', 0, [tree1, tree2, tree3, tree4]);
+          createButton(tree1, 'Tree 2', -50, [tree0, tree2, tree3, tree4]);
+          createButton(tree2, 'Tree 3', -100, [tree0, tree1, tree3, tree4]);
+          createButton(tree3, 'Tree 4', -150, [tree0, tree1, tree2, tree4]);
+          createButton(tree4, 'Tree 5', -200, [tree0, tree1, tree2, tree3]);
 
           return scene;
         };
