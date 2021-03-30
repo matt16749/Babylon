@@ -16,14 +16,14 @@
     "express": "~4.16.1",
     "hbs": "~4.0.4",
     "http-errors": "~1.6.3",
-    "morgan": "~1.9.1"
-  },
-  "devDependencies": {
+    "morgan": "~1.9.1",
     "@babel/cli": "^7.13.10",
     "@babel/core": "^7.13.10",
     "@babel/node": "^7.13.12",
     "@babel/plugin-transform-arrow-functions": "^7.13.0",
-    "@babel/preset-env": "^7.13.12",
+    "@babel/preset-env": "^7.13.12"
+  },
+  "devDependencies": {
     "nodemon": "^2.0.7"
   }
 }
