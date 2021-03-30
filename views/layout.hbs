@@ -412,78 +412,101 @@
           advancedTexture.addControl(button);
         }
 
-        var createBaseTooltip = function(mesh, scene, offsetX, offsetY, tooltipText) {
-          // GUI
-          var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
-          advancedTexture.isForeground = true;
-          advancedTexture.useInvalidateRectOptimization = false;
+        var createBaseTextBox = function(width, height) {
+          var textBox = new BABYLON.GUI.Rectangle();
+          textBox.width = width;
+          textBox.height = height;
+          textBox.thickness = theme.lineThickness;
+          textBox.background = theme.background;
+          textBox.cornerRadius = 5;
+          textBox.alpha = 0.8;
 
-          let textBox1 = new BABYLON.GUI.Rectangle();
-          advancedTexture.addControl(textBox1);
-          textBox1.width = "250px";
-          textBox1.height ="150px";
-          textBox1.thickness = theme.lineThickness;
+          return textBox;
+        }
 
-          // Where the tooltip will show up
-          textBox1.linkOffsetX = offsetX;
-          textBox1.linkOffsetY = offsetY;
+        var createBaseText = function(text) {
+          var baseText = new BABYLON.GUI.TextBlock();
+          baseText.text = text;
+          baseText.color = theme.color;
+          baseText.fontSize = 14;
+          baseText.fontFamily = theme.fontFamily;
+          baseText.textWrapping = true;
+          baseText.textVerticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
+          baseText.background = theme.background;
+          baseText.alpha = 1.5;
+          baseText.paddingTop = "20px";
+          baseText.paddingBottom = "20px";
+          baseText.paddingLeft = "20px";
+          baseText.paddingRight = "20px";
+          baseText.rotation = Math.PI;
 
-          textBox1.transformCenterX = 0;
-          textBox1.transformCenterY = 1;
-          textBox1.background = theme.background;
+          return baseText;
+        }
 
-          textBox1.alpha = 0.7;
-          textBox1.scaleX = 0;
-          textBox1.scaleY = 0;
-          textBox1.cornerRadius = 5
-          textBox1.linkWithMesh(mesh);
+        var createBaseTooltipAnimation = function(scene, tooltip) {
+          var actionManager = new BABYLON.ActionManager(scene);
+          var frameRate = 30;
 
-          let text1 = new BABYLON.GUI.TextBlock();
-          text1.text = tooltipText || "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Id consectetur purus ut faucibus pulvinar. Placerat vestibulum lectus mauris ultrices. Arcu cursus euismod quis viverra nibh cras pulvinar mattis nunc. Quisque id diam vel quam elementum pulvinar. Imperdiet sed euismod nisi porta. Habitasse platea dictumst quisque sagittis purus sit amet. Neque egestas congue quisque egestas diam in. Facilisis volutpat est velit egestas dui id ornare arcu odio. Faucibus ornare suspendisse sed nisi lacus sed viverra tellus in. Eu facilisis sed odio morbi quis commodo odio. Dolor sit amet consectetur adipiscing elit ut aliquam. Tristique senectus et netus et malesuada. Nibh venenatis cras sed felis.";
-          text1.color = theme.color;
-          text1.fontSize = 14;
-          text1.fontFamily = theme.fontFamily;
-          text1.textWrapping = true;
-          text1.textVerticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
-          text1.background = '#006994'
-          textBox1.addControl(text1)
-          text1.alpha = (1/text1.parent.alpha);
-          text1.paddingTop = "20px";
-          text1.paddingBottom = "20px";
-          text1.paddingLeft = "20px";
-          text1.paddingRight = "20px";
+          var scaleXAnimation = new BABYLON.Animation("myAnimation", "scaleX", frameRate * 4, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
+          var scaleYAnimation = new BABYLON.Animation("myAnimation", "scaleY", frameRate * 4, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
 
-          let actionManager = new BABYLON.ActionManager(scene);
-          mesh.actionManager = actionManager;
-
-          let scaleXAnimation = new BABYLON.Animation("myAnimation", "scaleX", 30, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
-          let scaleYAnimation = new BABYLON.Animation("myAnimation", "scaleY", 30, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
-
+          // Animation keys
           var keys = [];
 
+          // Starting position
           keys.push({
             frame: 0,
             value: 0
           });
 
+          // Ending position
           keys.push({
-            frame: 10,
-            value: 1
+            frame: frameRate,
+            value: -1
           });
 
           scaleXAnimation.setKeys(keys);
           scaleYAnimation.setKeys(keys);
-          textBox1.animations = [];
-          textBox1.animations.push(scaleXAnimation);
-          textBox1.animations.push(scaleYAnimation);
+          tooltip.animations = [];
+          tooltip.animations.push(scaleXAnimation);
+          tooltip.animations.push(scaleYAnimation);
 
-          actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnPointerOverTrigger, function(ev){
-            scene.beginAnimation(textBox1, 0, 10, false);
+          actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnPointerOverTrigger, function(){
+            scene.beginAnimation(tooltip, 0, frameRate, false);
           }));
-          //if hover is over remove highlight of the mesh
-          actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnPointerOutTrigger, function(ev){
-            scene.beginAnimation(textBox1, 10, 0, false);
+          actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnPointerOutTrigger, function(){
+            scene.beginAnimation(tooltip, frameRate, 0, false);
           }));
+
+          return actionManager;
+        }
+
+        var createBaseTooltip = function(mesh, scene, offsetX, offsetY, tooltipText) {
+          // GUI
+          var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+          advancedTexture.isForeground = true;
+          advancedTexture.useInvalidateRectOptimization = false;
+          var width = "250px";
+          var height = "150px";
+
+          // Text container box
+          var textBox = createBaseTextBox(width, height);
+          advancedTexture.addControl(textBox);
+          textBox.linkOffsetX = offsetX;
+          textBox.linkOffsetY = offsetY;
+          textBox.transformCenterX = 0;
+          textBox.transformCenterY = 1;
+          textBox.scaleX = 0;
+          textBox.scaleY = 0;
+          textBox.linkWithMesh(mesh);
+
+          // Text properties
+          var text = createBaseText(tooltipText);
+          textBox.addControl(text);
+
+          // Animation
+          var animation = createBaseTooltipAnimation(scene, textBox);
+          mesh.actionManager = animation;
 
           return scene;
         }
