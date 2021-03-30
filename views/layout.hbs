@@ -26,6 +26,12 @@
   <body>
       <canvas id="renderCanvas" touch-action="none"></canvas>
       <script>
+        var theme = {
+          background: "#006EAF",
+          color: 'white',
+          lineThickness: 2
+        }
+
         //creates an x, y, z coordinate system using the parameter vec3 for the y axis
         var coordSystem = function(vec3) {  //vec3 non-zero Vector3
           var _y = vec3.normalize();
@@ -315,6 +321,13 @@
                 particle.scale = new BABYLON.Vector3(Math.pow(trunkTaper, boughs + 1), Math.pow(trunkTaper, boughs + 1), Math.pow(trunkTaper, boughs + 1));
                 particle.quaternion = BABYLON.Quaternion.RotationAxis(_axis, _theta);
                 particle.position = _mini_place;
+
+                var testText = 'This is maybe on a branch';
+
+                const treeOffsetX = "150px";
+                const treeOffsetY = "-100px";
+
+                {{!-- createTooltip(particle, scene, treeOffsetX, treeOffsetY, testText); --}}
             }
 
              //add base tree mesh enough for all the final forked branches
@@ -360,7 +373,7 @@
           camera.upperRadiusLimit = 1000; // Maximum distance of viewing angle
           camera.radius = 100; // Initialize the viewing angle distance
 
-          camera.useAutoRotationBehavior = true;
+          {{!-- camera.useAutoRotationBehavior = true; --}}
           // camera.autoRotationBehavior.idleRotationSpeed = 0.2;
 
           camera.useFramingBehavior = true;
@@ -371,8 +384,8 @@
 
         const setGround = () => {
           const ground = BABYLON.MeshBuilder.CreateGround("ground", {
-            width: 150,
-            height: 150
+            width: 300,
+            height: 300
           });
           const groundMat = new BABYLON.StandardMaterial("groundMat");
           groundMat.diffuseColor = BABYLON.Color3.FromHexString("#585E43")
@@ -381,80 +394,148 @@
           return ground;
         }
 
-        var createTooltip = function(mesh, scene, offsetX, offsetY) {
+        var createButton = function(tree, text, verticalOffset) {
+          // GUI
+          var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+ 
+          var button = BABYLON.GUI.Button.CreateSimpleButton("but1", text);
+          button.width = "150px"
+          button.height = "40px";
+          button.color = theme.color;
+          button.cornerRadius = 5;
+          button.background = theme.background;
+          button.onPointerUpObservable.add(function() {
+            tree.setEnabled(!tree.isEnabled());
+          });
+          button.top = verticalOffset;
+          button.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
+          button.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
+          advancedTexture.addControl(button); 
+        }
+
+        var createTooltip = function(mesh, scene, offsetX, offsetY, tooltipText) {
           // GUI
           var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
           advancedTexture.isForeground = true;
           advancedTexture.useInvalidateRectOptimization = false;
 
           let textBox1 = new BABYLON.GUI.Rectangle();
-              advancedTexture.addControl(textBox1);
-              textBox1.width = "300px";
-              textBox1.height ="200px";
-              textBox1.thickness = 2;
+          advancedTexture.addControl(textBox1);
+          textBox1.width = "300px";
+          textBox1.height ="200px";
+          textBox1.thickness = theme.lineThickness;
 
-              // Where the tooltip will show up
-              textBox1.linkOffsetX = offsetX;
-              textBox1.linkOffsetY = offsetY;
+          // Where the tooltip will show up
+          textBox1.linkOffsetX = offsetX;
+          textBox1.linkOffsetY = offsetY;
 
-              textBox1.transformCenterX = 0;
-              textBox1.transformCenterY = 1;
-              textBox1.background = '#626363';
+          textBox1.transformCenterX = 0;
+          textBox1.transformCenterY = 1;
+          textBox1.background = theme.background;
 
-              textBox1.alpha = 0.7;
-              textBox1.scaleX = 0;
-              textBox1.scaleY = 0;
-              textBox1.cornerRadius = 30
-              textBox1.linkWithMesh(mesh);
+          textBox1.alpha = 0.7;
+          textBox1.scaleX = 0;
+          textBox1.scaleY = 0;
+          textBox1.cornerRadius = 5
+          textBox1.linkWithMesh(mesh);
 
           let text1 = new BABYLON.GUI.TextBlock();
-              text1.text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Id consectetur purus ut faucibus pulvinar. Placerat vestibulum lectus mauris ultrices. Arcu cursus euismod quis viverra nibh cras pulvinar mattis nunc. Quisque id diam vel quam elementum pulvinar. Imperdiet sed euismod nisi porta. Habitasse platea dictumst quisque sagittis purus sit amet. Neque egestas congue quisque egestas diam in. Facilisis volutpat est velit egestas dui id ornare arcu odio. Faucibus ornare suspendisse sed nisi lacus sed viverra tellus in. Eu facilisis sed odio morbi quis commodo odio. Dolor sit amet consectetur adipiscing elit ut aliquam. Tristique senectus et netus et malesuada. Nibh venenatis cras sed felis.";
-              text1.color = "White";
-              text1.fontSize = 14;
-              text1.textWrapping = true;
-              text1.textVerticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
-              text1.background = '#006994'
-              textBox1.addControl(text1)
-              text1.alpha = (1/text1.parent.alpha);
-              text1.paddingTop = "20px";
-              text1.paddingBottom = "20px";
-              text1.paddingLeft = "20px";
-              text1.paddingRight = "20px";
+          text1.text = tooltipText || "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Id consectetur purus ut faucibus pulvinar. Placerat vestibulum lectus mauris ultrices. Arcu cursus euismod quis viverra nibh cras pulvinar mattis nunc. Quisque id diam vel quam elementum pulvinar. Imperdiet sed euismod nisi porta. Habitasse platea dictumst quisque sagittis purus sit amet. Neque egestas congue quisque egestas diam in. Facilisis volutpat est velit egestas dui id ornare arcu odio. Faucibus ornare suspendisse sed nisi lacus sed viverra tellus in. Eu facilisis sed odio morbi quis commodo odio. Dolor sit amet consectetur adipiscing elit ut aliquam. Tristique senectus et netus et malesuada. Nibh venenatis cras sed felis.";
+          text1.color = theme.color;
+          text1.fontSize = 14;
+          text1.fontFamily = "monospace";
+          text1.textWrapping = true;
+          text1.textVerticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
+          text1.background = '#006994'
+          textBox1.addControl(text1)
+          text1.alpha = (1/text1.parent.alpha);
+          text1.paddingTop = "20px";
+          text1.paddingBottom = "20px";
+          text1.paddingLeft = "20px";
+          text1.paddingRight = "20px";
 
           let actionManager = new BABYLON.ActionManager(scene);
           mesh.actionManager = actionManager;
 
-            let scaleXAnimation = new BABYLON.Animation("myAnimation", "scaleX", 30, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
-            let scaleYAnimation = new BABYLON.Animation("myAnimation", "scaleY", 30, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
+          let scaleXAnimation = new BABYLON.Animation("myAnimation", "scaleX", 30, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
+          let scaleYAnimation = new BABYLON.Animation("myAnimation", "scaleY", 30, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
 
-              var keys = [];
+          var keys = [];
 
-               keys.push({
-                            frame: 0,
-                            value: 0
-                        });
-                        keys.push({
-                          frame: 10,
-                          value: 1
-                        });
+          keys.push({
+            frame: 0,
+            value: 0
+          });
 
-                  scaleXAnimation.setKeys(keys);
-                  scaleYAnimation.setKeys(keys);
-                  textBox1.animations = [];
-                  textBox1.animations.push(scaleXAnimation);
-                  textBox1.animations.push(scaleYAnimation);
+          keys.push({
+            frame: 10,
+            value: 1
+          });
+
+          scaleXAnimation.setKeys(keys);
+          scaleYAnimation.setKeys(keys);
+          textBox1.animations = [];
+          textBox1.animations.push(scaleXAnimation);
+          textBox1.animations.push(scaleYAnimation);
 
           actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnPointerOverTrigger, function(ev){
-                     scene.beginAnimation(textBox1, 0, 10, false);
-                    }));
-                    //if hover is over remove highlight of the mesh
+            scene.beginAnimation(textBox1, 0, 10, false);
+          }));
+          //if hover is over remove highlight of the mesh
           actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnPointerOutTrigger, function(ev){
-                      scene.beginAnimation(textBox1, 10, 0, false);
-                    }));
+            scene.beginAnimation(textBox1, 10, 0, false);
+          }));
 
           return scene;
         }
 
+        var createAttachedTooltip = function(mesh, scene, toolTipText) {
+          var tooltip = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+          var offset = 300;
+
+          // shape of tooltip
+          var rect1 = new BABYLON.GUI.Rectangle();
+          rect1.width = 0.2;
+          rect1.height = "40px";
+          rect1.cornerRadius = 5;
+          rect1.color = theme.color;
+          rect1.thickness = theme.lineThickness;
+          rect1.background = theme.background;
+          tooltip.addControl(rect1);
+          rect1.linkWithMesh(mesh);   
+          rect1.linkOffsetY = -offset;
+
+          {{!-- rect1.linkOffsetX = "60px"; --}}
+
+          // text in rectangular label
+          var label = new BABYLON.GUI.TextBlock();
+          label.text = toolTipText;
+          rect1.addControl(label);
+
+          // circle target
+          var target = new BABYLON.GUI.Ellipse();
+          target.width = "40px";
+          target.height = "40px";
+          target.color = theme.color;
+          target.thickness = theme.lineThickness;
+          target.background = theme.background;
+          target.linkOffsetY = 150 - offset;
+          tooltip.addControl(target);
+          target.linkWithMesh(mesh);   
+
+          // line connecting target and tooltip
+          var line = new BABYLON.GUI.Line();
+          line.lineWidth = 4;
+          line.color = theme.color;
+          line.y2 = 20;
+          line.linkOffsetY = -(offset-130);
+          tooltip.addControl(line);
+          line.linkWithMesh(mesh); 
+          line.connectedControl = rect1;  
+        
+          return scene;
+        };
+        
         var createScene = function() {
           // TODO: Start here for initialization
 
@@ -681,15 +762,41 @@
             leafMaterial,
             scene
           );
-          tree4.position.x = 70
-          tree4.position.y = 0
-          tree4.position.z = -35
+          tree4.position.x = 70;
+          tree4.position.y = 0;
+          tree4.position.z = -35;
 
           camera.setTarget(tree1);
 
           const treeOffsetX = "150px";
-          const treeOffsetY = "-100px"
-          createTooltip(tree1, scene, treeOffsetX, treeOffsetY);
+          const treeOffsetY = "-100px";
+
+          // tooltips
+          var tree0Text = "This is the first tree";
+          var tree1Text = "This is the second tree";
+          var tree2Text = "This is the third tree";
+          var tree3Text = "This is the fourth tree";
+          var tree4Text = "This is the fifth tree";
+
+          createTooltip(tree0, scene, treeOffsetX, treeOffsetY, tree0Text);
+          createTooltip(tree1, scene, treeOffsetX, treeOffsetY, tree1Text);
+          createTooltip(tree2, scene, treeOffsetX, treeOffsetY, tree2Text);
+          createTooltip(tree3, scene, treeOffsetX, treeOffsetY, tree3Text);
+          createTooltip(tree4, scene, treeOffsetX, treeOffsetY, tree4Text);
+
+          // another option for tooltip
+          {{!-- createAttachedTooltip(tree0, scene, tree0Text);
+          createAttachedTooltip(tree1, scene, tree1Text);
+          createAttachedTooltip(tree2, scene, tree2Text);
+          createAttachedTooltip(tree3, scene, tree3Text);
+          createAttachedTooltip(tree4, scene, tree4Text); --}}
+
+          // sample buttons
+          createButton(tree0, 'Tree 1', 0);
+          createButton(tree1, 'Tree 2', -50);
+          createButton(tree2, 'Tree 3', -100);
+          createButton(tree3, 'Tree 4', -150);
+          createButton(tree4, 'Tree 5', -200);
 
           return scene;
         };
