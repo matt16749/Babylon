@@ -29,6 +29,7 @@
         var theme = {
           background: "#006EAF",
           color: 'white',
+          fontFamily: 'Arial',
           lineThickness: 2
         }
 
@@ -321,13 +322,6 @@
                 particle.scale = new BABYLON.Vector3(Math.pow(trunkTaper, boughs + 1), Math.pow(trunkTaper, boughs + 1), Math.pow(trunkTaper, boughs + 1));
                 particle.quaternion = BABYLON.Quaternion.RotationAxis(_axis, _theta);
                 particle.position = _mini_place;
-
-                var testText = 'This is maybe on a branch';
-
-                const treeOffsetX = "150px";
-                const treeOffsetY = "-100px";
-
-                {{!-- createTooltip(particle, scene, treeOffsetX, treeOffsetY, testText); --}}
             }
 
              //add base tree mesh enough for all the final forked branches
@@ -418,7 +412,7 @@
           advancedTexture.addControl(button);
         }
 
-        var createTooltip = function(mesh, scene, offsetX, offsetY, tooltipText) {
+        var createBaseTooltip = function(mesh, scene, offsetX, offsetY, tooltipText) {
           // GUI
           var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
           advancedTexture.isForeground = true;
@@ -426,8 +420,8 @@
 
           let textBox1 = new BABYLON.GUI.Rectangle();
           advancedTexture.addControl(textBox1);
-          textBox1.width = "300px";
-          textBox1.height ="200px";
+          textBox1.width = "250px";
+          textBox1.height ="150px";
           textBox1.thickness = theme.lineThickness;
 
           // Where the tooltip will show up
@@ -448,7 +442,7 @@
           text1.text = tooltipText || "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Id consectetur purus ut faucibus pulvinar. Placerat vestibulum lectus mauris ultrices. Arcu cursus euismod quis viverra nibh cras pulvinar mattis nunc. Quisque id diam vel quam elementum pulvinar. Imperdiet sed euismod nisi porta. Habitasse platea dictumst quisque sagittis purus sit amet. Neque egestas congue quisque egestas diam in. Facilisis volutpat est velit egestas dui id ornare arcu odio. Faucibus ornare suspendisse sed nisi lacus sed viverra tellus in. Eu facilisis sed odio morbi quis commodo odio. Dolor sit amet consectetur adipiscing elit ut aliquam. Tristique senectus et netus et malesuada. Nibh venenatis cras sed felis.";
           text1.color = theme.color;
           text1.fontSize = 14;
-          text1.fontFamily = "monospace";
+          text1.fontFamily = theme.fontFamily;
           text1.textWrapping = true;
           text1.textVerticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
           text1.background = '#006994'
@@ -828,31 +822,47 @@
 
           camera.setTarget(tree1);
 
-          const treeOffsetX = "175px";
-          const treeOffsetY = "-100px";
+          // TOOL-TIP - START //
 
-          // tooltips
-          var tree0Text = "This is the first tree";
-          var tree1Text = "This is the second tree";
-          var tree2Text = "This is the third tree";
-          var tree3Text = "This is the fourth tree";
-          var tree4Text = "This is the fifth tree";
-          var tree5Text = "This is the sixth tree";
+          const baseTooltipOffsetX = "125px";
+          const baseTooltipOffsetY = "-75px";
 
-          createTooltip(tree0, scene, treeOffsetX, treeOffsetY, tree0Text);
-          createTooltip(tree1, scene, treeOffsetX, treeOffsetY, tree1Text);
-          createTooltip(tree2, scene, treeOffsetX, treeOffsetY, tree2Text);
-          createTooltip(tree3, scene, treeOffsetX, treeOffsetY, tree3Text);
-          createTooltip(tree4, scene, treeOffsetX, treeOffsetY, tree4Text);
-          createTooltip(tree5, scene, treeOffsetX, treeOffsetY, tree5Text);
+          const TOOLTIP_TEXT_BASE = {
+            TREE_0:
+              "Hello! We're Enterprise and Infrastructure COEs!",
+            TREE_1:
+              "I'm a young tree. Hover over my branches to see each team.",
+            TREE_2:
+              "I'm a growing tree. Hover over my branches to see each team.",
+            TREE_3:
+              "Oh no, I'm overwatered. I'd like to grow faster, but I need time and cannot take too many requests all at once.",
+            TREE_4: 
+              "Thank you for listening. The right amount of water added soil, bug fixing all really helped. Now I just need some time to recover and keep up the growth.",
+            TREE_5:
+              "Thank you for taking care of me. Let's keep up the structured process. I'm so proud to be the strongest and most fruitful tree in the field."
+          };
 
+          const TOOLTIP_TEXT_BRANCHES = {
+            BUILD: "I'm Build!",
+            TAKEOFF: "I'm Takeoff",
+            DESIGN_COLLABORATION: "I'm Design Collaboration",
+            MODEL_COORDINATION: "I'm Model Coordination"
+          };
 
-          // another option for tooltip
-          {{!-- createAttachedTooltip(tree0, scene, tree0Text);
-          createAttachedTooltip(tree1, scene, tree1Text);
-          createAttachedTooltip(tree2, scene, tree2Text);
-          createAttachedTooltip(tree3, scene, tree3Text);
-          createAttachedTooltip(tree4, scene, tree4Text); --}}
+          // additional tooltips
+          createBaseTooltip(tree0, scene, baseTooltipOffsetX, baseTooltipOffsetY, TOOLTIP_TEXT_BASE.TREE_0);
+          createBaseTooltip(tree1, scene, baseTooltipOffsetX, baseTooltipOffsetY, TOOLTIP_TEXT_BASE.TREE_1);
+          createBaseTooltip(tree2, scene, baseTooltipOffsetX, baseTooltipOffsetY, TOOLTIP_TEXT_BASE.TREE_2);
+          createBaseTooltip(tree3, scene, baseTooltipOffsetX, baseTooltipOffsetY, TOOLTIP_TEXT_BASE.TREE_3);
+          createBaseTooltip(tree4, scene, baseTooltipOffsetX, baseTooltipOffsetY, TOOLTIP_TEXT_BASE.TREE_4);
+          createBaseTooltip(tree5, scene, baseTooltipOffsetX, baseTooltipOffsetY, TOOLTIP_TEXT_BASE.TREE_5);
+
+          // branch tooltips, does not have to be for every tree
+          // need to figure out how to hide per tree
+          {{!-- createAttachedTooltip(tree1, scene, TOOLTIP_TEXT_BRANCHES.TAKEOFF);
+          createAttachedTooltip(tree2, scene, TOOLTIP_TEXT_BRANCHES.BUILD); --}}
+
+          // TOOL-TIP - END //
 
           // sample buttons
           createButton(tree0, 'Bud', 0, [tree1, tree2, tree3, tree4, tree5]);
