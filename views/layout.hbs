@@ -45,6 +45,7 @@
             "light",
             new BABYLON.Vector3(0, 1, 0)
           );
+          light.intensity = 1;
 
           setGround();
 
@@ -55,26 +56,26 @@
           bark.diffuseTexture.uScale = 2.0;//Repeat 5 times on the Vertical Axes
           bark.diffuseTexture.vScale = 2.0;//Repeat 5 times on the Horizontal Axes
 
-          // Tree0
-          var trunkHeight = 20;
+          // stage 1
+          var trunkHeight = 5;
           var trunkTaper = 0.6;
-          var trunkSlices = 5;
-          var boughs = 2; // 1 or 2
-          var forks = 4;
-          var forkAngle = Math.PI/4;
-          var forkRatio = 2/(1+Math.sqrt(5)); //PHI the golden ratio
-          var branchAngle = Math.PI/3;
-          var bowFreq = 2;
-          var bowHeight = 3.5;
-          var branches = 10;
-          var leavesOnBranch = 5;
+          var trunkSlices = 10;
+          var boughs = 1; // 1 or 2
+          var forks = 1;
+          var forkAngle = 0;
+          var forkRatio = 1;
+          var branchAngle = 1;
+          var bowFreq = 1;
+          var bowHeight = 1;
+          var branches = 2;
+          var leavesOnBranch = 2;
           var leafWHRatio = 0.5;
           //leaf material
           var leafMaterial = new BABYLON.StandardMaterial(
             "leafMaterial",
             scene
           );
-          leafMaterial.diffuseColor = new BABYLON.Color3(0,1,0);
+          leafMaterial.diffuseColor = BABYLON.Color3.FromHexString("#ACCD3E")
           const tree0 = createTree(
             trunkHeight,
             trunkTaper,
@@ -93,21 +94,21 @@
             leafMaterial,
             scene
           );
-          tree0.position.x = -35
+          tree0.position.x = 0
           tree0.position.y = 0
 
-          // Tree 1
-          var trunkHeight = 20;
+          // stage 2
+          var trunkHeight = 10;
           var trunkTaper = 0.6;
           var trunkSlices = 5;
           var boughs = 2; // 1 or 2
-          var forks = 4;
+          var forks = 3;
           var forkAngle = Math.PI/4;
           var forkRatio = 2/(1+Math.sqrt(5)); //PHI the golden ratio
           var branchAngle = Math.PI/3;
-          var bowFreq = 2;
-          var bowHeight = 3.5;
-          var branches = 10;
+          var bowFreq = 1;
+          var bowHeight = 1;
+          var branches = 4;
           var leavesOnBranch = 5;
           var leafWHRatio = 0.5;
           //leaf material
@@ -115,7 +116,7 @@
             "leafMaterial",
             scene
           );
-          leafMaterial.diffuseColor = new BABYLON.Color3(0,1,0);
+          leafMaterial.diffuseColor = BABYLON.Color3.FromHexString("#ACCD3E")
           const tree1 = createTree(
             trunkHeight,
             trunkTaper,
@@ -139,8 +140,8 @@
           tree1.setEnabled(false);
 
 
-          // Tree2
-          var trunkHeight = 20;
+          // stage 3
+          var trunkHeight = 15;
           var trunkTaper = 0.6;
           var trunkSlices = 5;
           var boughs = 2; // 1 or 2
@@ -158,7 +159,7 @@
             "leafMaterial",
             scene
           );
-          leafMaterial.diffuseColor = new BABYLON.Color3(0,1,0);
+          leafMaterial.diffuseColor = BABYLON.Color3.FromHexString("#618D23")
           const tree2 = createTree(
             trunkHeight,
             trunkTaper,
@@ -177,11 +178,11 @@
             leafMaterial,
             scene
           );
-          tree2.position.x = 35
+          tree2.position.x = 0
           tree2.position.y = 0
           tree2.setEnabled(false);
 
-          // Tree3
+          // stage 4
           var trunkHeight = 20;
           var trunkTaper = 0.6;
           var trunkSlices = 5;
@@ -200,7 +201,7 @@
             "leafMaterial",
             scene
           );
-          leafMaterial.diffuseColor = new BABYLON.Color3(0,1,0);
+          leafMaterial.diffuseColor = BABYLON.Color3.FromHexString("#B69063")
           const tree3 = createTree(
             trunkHeight,
             trunkTaper,
@@ -219,31 +220,32 @@
             leafMaterial,
             scene
           );
-          tree3.position.x = 70
+          tree3.position.x = 0
           tree3.position.y = 0
-          tree3.position.z = 35
+          tree3.position.z = 0
           tree3.setEnabled(false);
 
-          // Tree4
+          // stage 5
           var trunkHeight = 20;
           var trunkTaper = 0.6;
           var trunkSlices = 5;
           var boughs = 2; // 1 or 2
-          var forks = 4;
+          var forks = 6;
           var forkAngle = Math.PI/4;
           var forkRatio = 2/(1+Math.sqrt(5)); //PHI the golden ratio
           var branchAngle = Math.PI/3;
           var bowFreq = 2;
           var bowHeight = 3.5;
           var branches = 10;
-          var leavesOnBranch = 5;
+          var leavesOnBranch = 10;
           var leafWHRatio = 0.5;
           //leaf material
           var leafMaterial = new BABYLON.StandardMaterial(
             "leafMaterial",
             scene
           );
-          leafMaterial.diffuseColor = new BABYLON.Color3(0,1,0);
+          leafMaterial.diffuseColor = BABYLON.Color3.FromHexString("#D5DB7D")
+          // leafMaterial.diffuseColor = BABYLON.Color3.FromHexString("#A6B264")
           const tree4 = createTree(
             trunkHeight,
             trunkTaper,
@@ -262,14 +264,62 @@
             leafMaterial,
             scene
           );
-          tree4.position.x = 70;
+          tree4.position.x = 0;
           tree4.position.y = 0;
-          tree4.position.z = -35;
+          tree4.position.z = 0;
           tree4.setEnabled(false);
+
+          // stage 6
+          var trunkHeight = 20;
+          var trunkTaper = 0.6;
+          var trunkSlices = 5;
+          var boughs = 2; // 1 or 2
+          var forks = 6;
+          var forkAngle = Math.PI/4;
+          var forkRatio = 2/(1+Math.sqrt(5)); //PHI the golden ratio
+          var branchAngle = Math.PI/3;
+          var bowFreq = 2;
+          var bowHeight = 3.5;
+          var branches = 10;
+          var leavesOnBranch = 10;
+          var leafWHRatio = 0.5;
+          //leaf material
+          var leafMaterial = new BABYLON.StandardMaterial(
+            "leafMaterial",
+            scene
+          );
+
+          leafMaterial.diffuseColor = BABYLON.Color3.FromHexString("#E84396")
+          leafMaterial.specularColor = BABYLON.Color3.FromHexString("#E84396")
+          leafMaterial.emissiveColor = BABYLON.Color3.FromHexString("#FF9DCE")
+          leafMaterial.ambientColor = BABYLON.Color3.FromHexString("#FF9DCE")
+
+          const tree5 = createTree(
+            trunkHeight,
+            trunkTaper,
+            trunkSlices,
+            bark,
+            boughs,
+            forks,
+            forkAngle,
+            forkRatio,
+            branches,
+            branchAngle,
+            bowFreq,
+            bowHeight,
+            leavesOnBranch,
+            leafWHRatio,
+            leafMaterial,
+            scene
+          );
+          tree5.position.x = 0;
+          tree5.position.y = 0;
+          tree5.position.z = 0;
+          tree5.setEnabled(false);
 
           camera.setTarget(tree1);
 
-          const treeOffsetX = "150px";
+          const treeOffsetX = "175px";
           const treeOffsetY = "-100px";
 
           // tooltips
@@ -278,12 +328,15 @@
           var tree2Text = "This is the third tree";
           var tree3Text = "This is the fourth tree";
           var tree4Text = "This is the fifth tree";
+          var tree5Text = "This is the sixth tree";
 
           createTooltip(tree0, scene, treeOffsetX, treeOffsetY, tree0Text);
           createTooltip(tree1, scene, treeOffsetX, treeOffsetY, tree1Text);
           createTooltip(tree2, scene, treeOffsetX, treeOffsetY, tree2Text);
           createTooltip(tree3, scene, treeOffsetX, treeOffsetY, tree3Text);
           createTooltip(tree4, scene, treeOffsetX, treeOffsetY, tree4Text);
+          createTooltip(tree5, scene, treeOffsetX, treeOffsetY, tree5Text);
+
 
           // another option for tooltip
           // createAttachedTooltip(tree0, scene, tree0Text);
@@ -293,11 +346,12 @@
           // createAttachedTooltip(tree4, scene, tree4Text);
 
           // sample buttons
-          createButton(tree0, 'Tree 1', 0, [tree1, tree2, tree3, tree4]);
-          createButton(tree1, 'Tree 2', -50, [tree0, tree2, tree3, tree4]);
-          createButton(tree2, 'Tree 3', -100, [tree0, tree1, tree3, tree4]);
-          createButton(tree3, 'Tree 4', -150, [tree0, tree1, tree2, tree4]);
-          createButton(tree4, 'Tree 5', -200, [tree0, tree1, tree2, tree3]);
+          createButton(tree0, 'Bud', 0, [tree1, tree2, tree3, tree4, tree5]);
+          createButton(tree1, 'Young Tree', -50, [tree0, tree2, tree3, tree4, tree5]);
+          createButton(tree2, 'Growing Tree', -100, [tree0, tree1, tree3, tree4, tree5]);
+          createButton(tree3, 'Overwatered Tree', -150, [tree0, tree1, tree2, tree4, tree5]);
+          createButton(tree4, 'Recovered Tree', -200, [tree0, tree1, tree2, tree3, tree5]);
+          createButton(tree5, 'Apple Blossom Tree', -250, [tree0, tree1, tree2, tree3, tree4]);
 
           return scene;
         };
