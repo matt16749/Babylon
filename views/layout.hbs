@@ -19,10 +19,12 @@
     </style>
     <script src="https://cdn.babylonjs.com/babylon.js"></script>
     <script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
+    <script src="https://cdn.babylonjs.com/materialsLibrary/babylon.skyMaterial.min.js"></script>
     <script src="https://preview.babylonjs.com/gui/babylon.gui.min.js"></script>
     <script src="https://code.jquery.com/pep/0.4.3/pep.js"></script>
     <script src="javascripts/setCamera.js"></script>
     <script src="javascripts/createTree.js"></script>
+    <script src="javascripts/createSkybox.js"></script>
     <script src="javascripts/setGround.js"></script>
     <script src="javascripts/createButton.js"></script>
     <script src="javascripts/createTooltip.js"></script>
@@ -46,7 +48,13 @@
             new BABYLON.Vector3(0, 1, 0)
           );
 
+          scene.debugLayer.show();
+
           setGround();
+
+          setSky();
+
+          console.log('scene', scene);
 
           //trunk and branch material
           var bark = new BABYLON.StandardMaterial("bark", scene);
@@ -54,6 +62,8 @@
           bark.diffuseTexture = new BABYLON.Texture("https://upload.wikimedia.org/wikipedia/commons/thumb/d/da/Bark_texture_wood.jpg/800px-Bark_texture_wood.jpg", scene);
           bark.diffuseTexture.uScale = 2.0;//Repeat 5 times on the Vertical Axes
           bark.diffuseTexture.vScale = 2.0;//Repeat 5 times on the Horizontal Axes
+
+          bark.bumpTexture = new BABYLON.Texture("assets/tree-bark-bump-texture.jpeg", scene);
 
           // Tree0
           var trunkHeight = 20;

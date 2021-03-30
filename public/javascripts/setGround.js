@@ -1,12 +1,15 @@
 "use strict";
 
 var setGround = function setGround() {
-  var ground = BABYLON.MeshBuilder.CreateGround("ground", {
+  var largeGroundMat = new BABYLON.StandardMaterial("largeGroundMat");
+  largeGroundMat.diffuseTexture = new BABYLON.Texture("assets/valleygrass.png");
+  var largeGround = BABYLON.MeshBuilder.CreateGroundFromHeightMap("largeGround", "assets/villageheightmap.png", {
     width: 300,
-    height: 300
+    height: 300,
+    subdivisions: 20,
+    minHeight: 0,
+    maxHeight: 2
   });
-  var groundMat = new BABYLON.StandardMaterial("groundMat");
-  groundMat.diffuseColor = BABYLON.Color3.FromHexString("#585E43");
-  ground.material = groundMat;
-  return ground;
+  largeGround.material = largeGroundMat;
+  return largeGround;
 };
