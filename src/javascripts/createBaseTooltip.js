@@ -4,7 +4,6 @@ var createBaseTooltip = function(mesh, scene, offsetX, offsetY, tooltipText) {
   advancedTexture.isForeground = true;
   advancedTexture.useInvalidateRectOptimization = false;
 
-  //@cynthia: change to accept input
   const width = "250px";
   const height = "150px";
 

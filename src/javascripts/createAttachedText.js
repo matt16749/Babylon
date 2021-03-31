@@ -1,4 +1,5 @@
 const createAttachedText = (text) => {
+  console.log('this is the text', text);
   const attachedText = new BABYLON.GUI.TextBlock();
   attachedText.text = text;
   attachedText.color = theme.color;

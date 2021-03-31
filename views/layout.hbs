@@ -119,8 +119,9 @@
 
           const treesData = [{
             data: TREES_NUMBER_VALUES[0],
+            branches: [],
             leafMaterial: materials.defaultLeaf,
-            tooltipText: "Hello! We're Enterprise and Infrastructure COEs!",
+            tooltipText: TOOLTIP_TEXT_BASE.TREE_0,
             buttonData: {
               label: 'Bud',
               verticalOffset: 0
@@ -128,8 +129,16 @@
             skyAnimation: skyAnimations.day
           }, {
             data: TREES_NUMBER_VALUES[1],
+            branches: [
+              {
+                offsetX: 0,
+                offsetY: -200,
+                text: TOOLTIP_TEXT_BRANCHES.BUILD,
+                width: 0.1
+              }
+            ],
             leafMaterial: materials.defaultLeaf,
-            tooltipText: "I'm growing. Hover over the branches to see my growth.",
+            tooltipText: TOOLTIP_TEXT_BASE.TREE_1,
             buttonData: {
               label: 'Young Tree',
               verticalOffset: -50
@@ -138,8 +147,28 @@
             
           }, {
             data: TREES_NUMBER_VALUES[2],
+            branches: [
+              {
+                offsetX: 0,
+                offsetY: -270,
+                text: TOOLTIP_TEXT_BRANCHES.TAKEOFF,
+                width: 0.1
+              },
+              {
+                offsetX: 100,
+                offsetY: -200,
+                text: TOOLTIP_TEXT_BRANCHES.DESIGN_COLLABORATION,
+                width: 0.15
+              },
+              {
+                offsetX: -100,
+                offsetY: -200,
+                text: TOOLTIP_TEXT_BRANCHES.MODEL_COORDINATION,
+                width: 0.15
+              }
+            ],
             leafMaterial: materials.overwateredLeaf,
-            tooltipText: "I'm a growing faster and bigger.",
+            tooltipText: TOOLTIP_TEXT_BASE.TREE_2,
             buttonData: {
               label: 'Growing Tree',
               verticalOffset: -100
@@ -147,8 +176,9 @@
             skyAnimation: skyAnimations.day
           }, {
             data: TREES_NUMBER_VALUES[3],
+            branches: [],
             leafMaterial: materials.dryLeaf,
-            tooltipText: "Oh no, I'm overwatered. I'd like to grow faster, but I need time and cannot take too many requests all at once.",
+            tooltipText: TOOLTIP_TEXT_BASE.TREE_3,
             buttonData: {
               label: 'Overwatered Tree',
               verticalOffset: -150
@@ -156,8 +186,9 @@
             skyAnimation: skyAnimations.night
           }, {
             data: TREES_NUMBER_VALUES[4],
+            branches: [],
             leafMaterial: materials.cherryBlossom,
-            tooltipText: "Thank you for listening. The right amount of water added soil, bug fixing all really helped. Now I just need some time to recover and keep up the growth.",
+            tooltipText: TOOLTIP_TEXT_BASE.TREE_4,
             buttonData: {
               label: 'Recovered Tree',
               verticalOffset: -200
@@ -165,8 +196,9 @@
             skyAnimation: skyAnimations.day
           }, {
             data: TREES_NUMBER_VALUES[5],
+            branches: [],
             leafMaterial: materials.cherryBlossom,
-            tooltipText: "Thank you for taking care of me. Let's keep up the structured process. I'm so proud to be the strongest and most fruitful tree in the field.",
+            tooltipText: TOOLTIP_TEXT_BASE.TREE_5,
             buttonData: {
               label: 'Apple Blossom Tree',
               verticalOffset: -250
@@ -214,6 +246,10 @@
               const baseTooltipOffsetX = "125px";
               const baseTooltipOffsetY = "-75px";
               createBaseTooltip(generatedTree, scene, baseTooltipOffsetX, baseTooltipOffsetY, tree.tooltipText);
+
+              tree.branches.forEach(branch => {
+                createAttachedTooltip(generatedTree, scene, branch.offsetX, branch.offsetY, branch.text, branch.width);
+              });
 
               createButton(index, tree.buttonData.label, tree.buttonData.verticalOffset, onClickButton);
 

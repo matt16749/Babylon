@@ -1,10 +1,11 @@
 const createAttachedTooltip = (mesh, scene, offsetX, offsetY, toolTipText, tooltipWidth) => {
+  console.log('the amount of times this happened');
   const tooltip = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
   tooltip.isForeground = true;
   tooltip.useInvalidateRectOptimization = false;
 
   const textBoxHeight = "40px";
-  const textBoxWidth = tooltipWidth || 0.2;
+  const textBoxWidth = tooltipWidth;
   const targetDiameter = "15px";
   const lineHeight = 20;
 

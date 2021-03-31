@@ -85,3 +85,17 @@ var TREES_NUMBER_VALUES = [{
   leavesOnBranch: 10,
   leafWHRatio: 0.5
 }];
+var TOOLTIP_TEXT_BRANCHES = {
+  BUILD: "I'm Build!",
+  TAKEOFF: "I'm Takeoff!",
+  DESIGN_COLLABORATION: "I'm Design Collaboration!",
+  MODEL_COORDINATION: "I'm Model Coordination!"
+};
+var TOOLTIP_TEXT_BASE = {
+  TREE_0: "Hello! We're Enterprise and Infrastructure COEs!",
+  TREE_1: "I'm a young tree. Hover over my branches to see each team.",
+  TREE_2: "I'm a growing tree. Hover over my branches to see each team.",
+  TREE_3: "Oh no, I'm overwatered. I'd like to grow faster, but I need time and cannot take too many requests all at once.",
+  TREE_4: "Thank you for listening. The right amount of water added soil, bug fixing all really helped. Now I just need some time to recover and keep up the growth.",
+  TREE_5: "Thank you for taking care of me. Let's keep up the structured process. I'm so proud to be the strongest and most fruitful tree in the field."
+};

@@ -1,4 +1,6 @@
 const createBaseTextBox = (width, height) => {
+  console.log('THIS IS THE THEME', theme);
+  console.log('This is the background', theme.background);
   const textBox = new BABYLON.GUI.Rectangle();
   textBox.height = height;
   textBox.width = width;
