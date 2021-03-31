@@ -414,8 +414,8 @@
 
         var createBaseTextBox = function(width, height) {
           var textBox = new BABYLON.GUI.Rectangle();
-          textBox.width = width;
           textBox.height = height;
+          textBox.width = width;
           textBox.thickness = theme.lineThickness;
           textBox.background = theme.background;
           textBox.cornerRadius = 5;
@@ -511,49 +511,132 @@
           return scene;
         }
 
-        var createAttachedTooltip = function(mesh, scene, toolTipText) {
-          var tooltip = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
-          var offset = 300;
+        var createLineAnimation = function(frameRate) {
+          var lineAnimation = new BABYLON.Animation("lineExtend", "scalingY", frameRate, BABYLON.Animation.ANIMATIONTYPE_FLOAT,
+          BABYLON.Animation.BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
 
-          // shape of tooltip
-          var rect1 = new BABYLON.GUI.Rectangle();
-          rect1.width = 0.2;
-          rect1.height = "40px";
-          rect1.cornerRadius = 5;
-          rect1.color = theme.color;
-          rect1.thickness = theme.lineThickness;
-          rect1.background = theme.background;
-          tooltip.addControl(rect1);
-          rect1.linkWithMesh(mesh);
-          rect1.linkOffsetY = -offset;
+          var keys = [];
 
-          {{!-- rect1.linkOffsetX = "60px"; --}}
+          // Starting position
+          keys.push({
+            frame: 0,
+            value: 0
+          });
 
-          // text in rectangular label
-          var label = new BABYLON.GUI.TextBlock();
-          label.text = toolTipText;
-          rect1.addControl(label);
+          // Ending position
+          keys.push({
+            frame: frameRate,
+            value: 1
+          });
 
-          // circle target
+          lineAnimation.setKeys(keys);
+
+          return lineAnimation;
+        }
+
+        var createLabelAnimation = function() {
+          var labelAnimation = new BABYLON.Animation("labelGrow", "scalingY", frameRate, BABYLON.Animation.ANIMATIONTYPE_FLOAT,
+          BABYLON.Animation.BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
+
+          var keys = [];
+
+          // Starting position
+          keys.push({
+            frame: 0,
+            value: 0
+          });
+
+          // Ending position
+          keys.push({
+            frame: frameRate,
+            value: 1
+          });
+
+          labelAnimation.setKeys(keys);
+
+          return labelAnimation;
+        }
+
+        var createAnimationGroup = function(line, lineAnimation, label, labelAnimation) {
+          var animationGroup = new BABYLON.AnimationGroup("tooltipGroup");
+          animationGroup.addTargetedAnimation(lineAnimation, line);
+          animationGroup.addTargetedAnimation(labelAnimation, label);
+
+          animationGroup.normalize(0, 100);
+
+          return animationGroup;
+        }
+
+        var createAttachedText = function(text) {
+          var attachedText = new BABYLON.GUI.TextBlock();
+          attachedText.text = text;
+          attachedText.color = theme.color;
+          attachedText.fontSize = 14;
+          attachedText.fontFamily = theme.fontFamily;
+          attachedText.textWrapping = true;
+          attachedText.textVerticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
+          attachedText.background = theme.background;
+          attachedText.alpha = 1.5;
+          attachedText.paddingTop = "10px";
+
+          return attachedText;
+        }
+
+        var createCircleTarget = function(diameter) {
           var target = new BABYLON.GUI.Ellipse();
-          target.width = "40px";
-          target.height = "40px";
+          target.width = diameter;
+          target.height = diameter;
           target.color = theme.color;
           target.thickness = theme.lineThickness;
           target.background = theme.background;
-          target.linkOffsetY = 150 - offset;
+          target.linkOffsetY = -130;
+
+          return target;
+        }
+
+        var createAttachedTooltipLine = function(height) {
+          var line = new BABYLON.GUI.Line();
+          line.lineWidth = 2;
+          line.color = theme.color;
+          line.y2 = height;
+          line.linkOffsetY = -137;
+
+          return line;
+        }
+
+        var createAttachedTooltip = function(mesh, scene, offsetX, offsetY, toolTipText) {
+          var tooltip = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+          tooltip.isForeground = true;
+          tooltip.useInvalidateRectOptimization = false;
+
+          var textBoxHeight = "40px";
+          var textBoxWidth = 0.2;
+          var targetDiameter = "15px";
+          var lineHeight = 20;
+
+          // Text container box
+          var textBox = createBaseTextBox(textBoxWidth, textBoxHeight);
+          tooltip.addControl(textBox);
+          textBox.linkOffsetY = offsetX;
+          textBox.linkOffsetY = offsetY;
+          textBox.linkWithMesh(mesh);
+
+          // Text properties
+          var text = createAttachedText(toolTipText);
+          textBox.addControl(text);
+
+          // Circle target
+          var target = createCircleTarget(targetDiameter);
           tooltip.addControl(target);
           target.linkWithMesh(mesh);
 
-          // line connecting target and tooltip
-          var line = new BABYLON.GUI.Line();
-          line.lineWidth = 4;
-          line.color = theme.color;
-          line.y2 = 20;
-          line.linkOffsetY = -(offset-130);
+          // Line connecting target and tooltip
+          var line = createAttachedTooltipLine(lineHeight);
           tooltip.addControl(line);
           line.linkWithMesh(mesh);
-          line.connectedControl = rect1;
+          line.connectedControl = textBox;
+
+          // Animation
 
           return scene;
         };
@@ -867,12 +950,12 @@
 
           const TOOLTIP_TEXT_BRANCHES = {
             BUILD: "I'm Build!",
-            TAKEOFF: "I'm Takeoff",
-            DESIGN_COLLABORATION: "I'm Design Collaboration",
-            MODEL_COORDINATION: "I'm Model Coordination"
+            TAKEOFF: "I'm Takeoff!",
+            DESIGN_COLLABORATION: "I'm Design Collaboration!",
+            MODEL_COORDINATION: "I'm Model Coordination!"
           };
 
-          // additional tooltips
+          // Base tooltips
           createBaseTooltip(tree0, scene, baseTooltipOffsetX, baseTooltipOffsetY, TOOLTIP_TEXT_BASE.TREE_0);
           createBaseTooltip(tree1, scene, baseTooltipOffsetX, baseTooltipOffsetY, TOOLTIP_TEXT_BASE.TREE_1);
           createBaseTooltip(tree2, scene, baseTooltipOffsetX, baseTooltipOffsetY, TOOLTIP_TEXT_BASE.TREE_2);
@@ -880,10 +963,10 @@
           createBaseTooltip(tree4, scene, baseTooltipOffsetX, baseTooltipOffsetY, TOOLTIP_TEXT_BASE.TREE_4);
           createBaseTooltip(tree5, scene, baseTooltipOffsetX, baseTooltipOffsetY, TOOLTIP_TEXT_BASE.TREE_5);
 
-          // branch tooltips, does not have to be for every tree
-          // need to figure out how to hide per tree
-          {{!-- createAttachedTooltip(tree1, scene, TOOLTIP_TEXT_BRANCHES.TAKEOFF);
-          createAttachedTooltip(tree2, scene, TOOLTIP_TEXT_BRANCHES.BUILD); --}}
+          // Branch tooltips
+          const attachedTooltipOffsetX = "200px";
+          const attachedTooltipOffsetY = "-200px";
+          createAttachedTooltip(tree1, scene, attachedTooltipOffsetX, attachedTooltipOffsetY, TOOLTIP_TEXT_BRANCHES.TAKEOFF);
 
           // TOOL-TIP - END //
 
