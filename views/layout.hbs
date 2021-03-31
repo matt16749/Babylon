@@ -140,7 +140,7 @@
                 offsetX: 0,
                 offsetY: -200,
                 text: TOOLTIP_TEXT_BRANCHES.BUILD,
-                width: 0.1
+                width: "100px"
               }
             ],
             leafMaterial: materials.defaultLeaf,
@@ -158,19 +158,19 @@
                 offsetX: 0,
                 offsetY: -270,
                 text: TOOLTIP_TEXT_BRANCHES.TAKEOFF,
-                width: 0.1
+                width: "100px"
               },
               {
                 offsetX: 100,
                 offsetY: -200,
                 text: TOOLTIP_TEXT_BRANCHES.DESIGN_COLLABORATION,
-                width: 0.15
+                width: "200px"
               },
               {
                 offsetX: -100,
                 offsetY: -200,
                 text: TOOLTIP_TEXT_BRANCHES.MODEL_COORDINATION,
-                width: 0.15
+                width: "200px"
               }
             ],
             leafMaterial: materials.overwateredLeaf,
@@ -211,15 +211,21 @@
             }
           }];
 
-
           const onClickButton = function (treeIndex) {
             trees.forEach(function(tree, index) {
               if (index === treeIndex) {
                 tree.setEnabled(true);
+                treesData[treeIndex].branches.forEach(branch => {
+                  branch.tooltip.isVisible = true;
+                });
               } else {
                 tree.setEnabled(false);
+                treesData[index].branches.forEach(branch => {
+                  branch.tooltip.isVisible = false;
+                });
               }
             });
+
             scene.stopAnimation(skybox);
             scene.beginDirectAnimation(skybox, [treesData[treeIndex].skyAnimation], 0, 100, false, 1);
           }
@@ -254,7 +260,9 @@
               createBaseTooltip(generatedTree, scene, baseTooltipOffsetX, baseTooltipOffsetY, tree.tooltipText);
 
               tree.branches.forEach(branch => {
-                createAttachedTooltip(generatedTree, scene, branch.offsetX, branch.offsetY, branch.text, branch.width);
+                const branchTooltip = createAttachedTooltip(generatedTree, scene, branch.offsetX, branch.offsetY, branch.text, branch.width);
+                branch.tooltip = branchTooltip;
+                branch.tooltip.isVisible = false;
               });
 
               createButton(index, tree.buttonData.label, tree.buttonData.verticalOffset, onClickButton);
