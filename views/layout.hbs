@@ -523,9 +523,9 @@
           return scene;
         }
 
-        var createLineAnimation = function(frameRate) {
-          var lineAnimation = new BABYLON.Animation("lineExtend", "scalingY", frameRate, BABYLON.Animation.ANIMATIONTYPE_FLOAT,
-          BABYLON.Animation.BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
+        var createLineAnimation = function(frameRate, line) {
+          var lineAnimation = new BABYLON.Animation("lineExtend", "scaleY", frameRate, BABYLON.Animation.ANIMATIONTYPE_FLOAT,
+          BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
 
           var keys = [];
 
@@ -546,9 +546,9 @@
           return lineAnimation;
         }
 
-        var createLabelAnimation = function() {
-          var labelAnimation = new BABYLON.Animation("labelGrow", "scalingY", frameRate, BABYLON.Animation.ANIMATIONTYPE_FLOAT,
-          BABYLON.Animation.BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
+        var createLabelAnimation = function(frameRate, label) {
+          var labelAnimation = new BABYLON.Animation("labelGrow", "scaleY", frameRate, BABYLON.Animation.ANIMATIONTYPE_FLOAT,
+          BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
 
           var keys = [];
 
@@ -631,25 +631,44 @@
           tooltip.addControl(textBox);
           textBox.linkOffsetY = offsetX;
           textBox.linkOffsetY = offsetY;
+          textBox.scaleY = 0;
           textBox.linkWithMesh(mesh);
 
           // Text properties
           var text = createAttachedText(toolTipText);
           textBox.addControl(text);
 
-          // Circle target
-          var target = createCircleTarget(targetDiameter);
-          tooltip.addControl(target);
-          target.linkWithMesh(mesh);
-
           // Line connecting target and tooltip
           var line = createAttachedTooltipLine(lineHeight);
           tooltip.addControl(line);
           line.linkWithMesh(mesh);
+          line.scaleY = 0;
           line.connectedControl = textBox;
 
           // Animation
-          // @cynthia: TODO
+          var frameRate = 30;
+          var lineAnimation = createLineAnimation(frameRate);
+          var labelAnimation = createLabelAnimation(frameRate);
+          var animationGroup = createAnimationGroup(line, lineAnimation, textBox, labelAnimation);
+
+          // Create target button
+          var circle = createCircleTarget(targetDiameter);
+
+          var target = BABYLON.GUI.Button.CreateSimpleButton("button");
+          target.width = "15px";
+          target.height = "15px";
+          target.color = "transparent";
+          target.onPointerEnterObservable.add(function () {
+            animationGroup.speedRatio = 10;
+            animationGroup.play(false);
+          });
+          target.onPointerOutObservable.add(function () {
+            animationGroup.reset();
+            animationGroup.stop();
+          });
+          target.top = -135;
+          target.addControl(circle);
+          tooltip.addControl(target);
 
           return target;
         };
