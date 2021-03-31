@@ -1,11 +1,8 @@
 "use strict";
 
 var setSky = function setSky() {
-  // Sky material
   var skyboxMaterial = new BABYLON.SkyMaterial("skyMaterial");
-  skyboxMaterial.backFaceCulling = false; //skyboxMaterial._cachedDefines.FOG = true;
-  // Sky mesh (box)
-
+  skyboxMaterial.backFaceCulling = false;
   var skybox = BABYLON.Mesh.CreateBox("skyBox", 1000.0);
   skybox.material = skyboxMaterial;
 
