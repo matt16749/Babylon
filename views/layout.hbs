@@ -26,8 +26,17 @@
     <script src="javascripts/createTree.js"></script>
     <script src="javascripts/setSkyAnimation.js"></script>
     <script src="javascripts/setGround.js"></script>
+    <script src="javascripts/createAttachedTooltipLine.js"></script>
     <script src="javascripts/createButton.js"></script>
-    <script src="javascripts/createTooltip.js"></script>
+    <script src="javascripts/createCircleTarget.js"></script>
+    <script src="javascripts/createAnimationGroup.js"></script>
+    <script src="javascripts/createBaseTooltipAnimation.js"></script>
+    <script src="javascripts/createBaseText.js"></script>
+    <script src="javascripts/createBaseTextBox.js"></script>
+    <script src="javascripts/createLineAnimation.js"></script>
+    <script src="javascripts/createLabelAnimation.js"></script>
+    <script src="javascripts/createAttachedText.js"></script>
+    <script src="javascripts/createBaseTooltip.js"></script>
     <script src="javascripts/createAttachedTooltip.js"></script>
     <script src="consts.js"></script>
 
@@ -106,98 +115,149 @@
               "dryLeafMaterial",
               scene
           );
-          
+
           materials.dryLeaf.diffuseColor = BABYLON.Color3.FromHexString("#B69063")
+
+          materials.recoveredLeaf = new BABYLON.StandardMaterial(
+            "recoveredLeaf",
+            scene
+          );
+          materials.recoveredLeaf.diffuseColor = BABYLON.Color3.FromHexString("#D5DB7D")
 
           materials.cherryBlossom = new BABYLON.StandardMaterial(
               "cherryBlossomMaterial",
               scene
           );
-          
-          materials.cherryBlossom.diffuseColor = BABYLON.Color3.FromHexString("#E84396");
-          materials.cherryBlossom.specularColor = BABYLON.Color3.FromHexString("#E84396");
-          materials.cherryBlossom.emissiveColor = BABYLON.Color3.FromHexString("#FF9DCE");
-          materials.cherryBlossom.ambientColor = BABYLON.Color3.FromHexString("#FF9DCE");
+          materials.cherryBlossom.diffuseColor = BABYLON.Color3.FromHexString("#E84396")
+          materials.cherryBlossom.specularColor = BABYLON.Color3.FromHexString("#E84396")
+          materials.cherryBlossom.emissiveColor = BABYLON.Color3.FromHexString("#FF9DCE")
+          materials.cherryBlossom.ambientColor = BABYLON.Color3.FromHexString("#FF9DCE")
 
-
-          setGround();
+           setGround();
           
           //const skyAnimations = {
           //  day: setSkyAnimation("Day", "material.inclination", skyboxMaterial.inclination, 0),
           //  night: setSkyAnimation("Night", "material.inclination", skyboxMaterial.inclination, -0.5)
           //};
-
           
           //Set trees data
           let trees = [];
 
           const treesData = [{
             data: TREES_NUMBER_VALUES[0],
+            branches: [],
             leafMaterial: materials.defaultLeaf,
-            tooltipText: "This is the first tree",
+            tooltipText: TOOLTIP_TEXT_BASE.TREE_0,
             buttonData: {
               label: 'Bud',
-              verticalOffset: 0
+              verticalOffset: -20
             },
             skyMaterial: skyboxMaterials.earlyMorning
           }, {
             data: TREES_NUMBER_VALUES[1],
+            branches: [
+              {
+                offsetX: 0,
+                offsetY: -200,
+                text: TOOLTIP_TEXT_BRANCHES.BUILD,
+                width: "100px"
+              },
+              {
+                offsetX: 40,
+                offsetY: -150,
+                text: TOOLTIP_TEXT_BRANCHES.DOCS,
+                width: "100px"
+              },
+              {
+                offsetX: -40,
+                offsetY: -150,
+                text: TOOLTIP_TEXT_BRANCHES.INSIGHT,
+                width: "100px"
+              }
+            ],
             leafMaterial: materials.defaultLeaf,
-            tooltipText: "This is the second tree",
+            tooltipText: TOOLTIP_TEXT_BASE.TREE_1,
             buttonData: {
-              label: 'Young Tree',
-              verticalOffset: -50
+              label: 'Young',
+              verticalOffset: -70
             },
             skyMaterial: skyboxMaterials.morning
           }, {
             data: TREES_NUMBER_VALUES[2],
+            branches: [
+              {
+                offsetX: 0,
+                offsetY: -270,
+                text: TOOLTIP_TEXT_BRANCHES.TAKEOFF,
+                width: "100px"
+              },
+              {
+                offsetX: 100,
+                offsetY: -200,
+                text: TOOLTIP_TEXT_BRANCHES.DESIGN_COLLABORATION,
+                width: "200px"
+              },
+              {
+                offsetX: -100,
+                offsetY: -200,
+                text: TOOLTIP_TEXT_BRANCHES.MODEL_COORDINATION,
+                width: "200px"
+              }
+            ],
             leafMaterial: materials.overwateredLeaf,
-            tooltipText: "This is the third tree",
+            tooltipText: TOOLTIP_TEXT_BASE.TREE_2,
             buttonData: {
-              label: 'Growing Tree',
-              verticalOffset: -100
+              label: 'Growing',
+              verticalOffset: -120
             },
             skyMaterial: skyboxMaterials.noon
           }, {
             data: TREES_NUMBER_VALUES[3],
+            branches: [],
             leafMaterial: materials.dryLeaf,
-            tooltipText: "This is the fourth tree",
+            tooltipText: TOOLTIP_TEXT_BASE.TREE_3,
             buttonData: {
-              label: 'Overwatered Tree',
-              verticalOffset: -150
+              label: 'Overwatered',
+              verticalOffset: -170
             },
             skyMaterial: skyboxMaterials.cloudy,
           }, {
             data: TREES_NUMBER_VALUES[4],
-            leafMaterial: materials.cherryBlossom,
-            tooltipText: "This is the fifth tree",
+            branches: [],
+            leafMaterial: materials.recoveredLeaf,
+            tooltipText: TOOLTIP_TEXT_BASE.TREE_4,
             buttonData: {
-              label: 'Recovered Tree',
-              verticalOffset: -200
+              label: 'Recovered',
+              verticalOffset: -220
             },
             skyMaterial: skyboxMaterials.afternoon
           }, {
             data: TREES_NUMBER_VALUES[5],
+            branches: [],
             leafMaterial: materials.cherryBlossom,
-            tooltipText: "This is the sixth tree",
+            tooltipText: TOOLTIP_TEXT_BASE.TREE_5,
             buttonData: {
-              label: 'Apple Blossom Tree',
-              verticalOffset: -250
-            },
-            skyMaterial: skyboxMaterials.sunset
-
+              label: 'Cherry Blossom',
+              verticalOffset: -270
+            }
           }];
 
-          //Create skybox
+           //Create skybox
           const skybox = BABYLON.MeshBuilder.CreateBox("skyBox", {size:1000.0}, scene);
           skybox.material = skyboxMaterials.earlyMorning;
 
-          const onClickButton = function(treeIndex) {
+          const onClickButton = function (treeIndex) {
             trees.forEach(function(tree, index) {
               if (index === treeIndex) {
                 tree.setEnabled(true);
+                treesData[treeIndex].branches.forEach(branch => {
+                  branch.tooltip.isVisible = true;
+                });
               } else {
                 tree.setEnabled(false);
+                treesData[index].branches.forEach(branch => {
+                  branch.tooltip.isVisible = false;
+                });
               }
             });
 
@@ -233,10 +293,15 @@
               generatedTree.position.z = 0
               generatedTree.setEnabled(false);
 
-              const treeOffsetX = "175px";
-              const treeOffsetY = "-100px";
+              const baseTooltipOffsetX = "125px";
+              const baseTooltipOffsetY = "-75px";
+              createBaseTooltip(generatedTree, scene, baseTooltipOffsetX, baseTooltipOffsetY, tree.tooltipText);
 
-              createTooltip(generatedTree, scene, treeOffsetX, treeOffsetY, tree.tooltipText);
+              tree.branches.forEach(branch => {
+                const branchTooltip = createAttachedTooltip(generatedTree, scene, branch.offsetX, branch.offsetY, branch.text, branch.width);
+                branch.tooltip = branchTooltip;
+                branch.tooltip.isVisible = false;
+              });
 
               createButton(index, tree.buttonData.label, tree.buttonData.verticalOffset, onClickButton);
 
@@ -247,7 +312,7 @@
           trees = generateTrees(treesData);
 
           trees[0].setEnabled(true);
-          
+
           camera.setTarget(trees[0]);
 
           return scene;
