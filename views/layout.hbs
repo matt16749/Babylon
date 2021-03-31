@@ -63,7 +63,7 @@
             day: setSkyAnimation("Day", "material.inclination", skyboxMaterial.inclination, 0),
             night: setSkyAnimation("Night", "material.inclination", skyboxMaterial.inclination, -0.5)
           };
-         
+
           //Set materials
           const materials = {};
 
@@ -92,14 +92,20 @@
               "dryLeafMaterial",
               scene
           );
-          
+
           materials.dryLeaf.diffuseColor = BABYLON.Color3.FromHexString("#B69063")
 
           materials.cherryBlossom = new BABYLON.StandardMaterial(
               "cherryBlossomMaterial",
               scene
           );
-          
+
+          materials.recoveredLeaf = new BABYLON.StandardMaterial(
+            "leafMaterial",
+            scene
+          );
+          materials.recoveredLeaf.diffuseColor = BABYLON.Color3.FromHexString("#D5DB7D")
+
           materials.cherryBlossom.diffuseColor = BABYLON.Color3.FromHexString("#E84396")
           materials.cherryBlossom.specularColor = BABYLON.Color3.FromHexString("#E84396")
           materials.cherryBlossom.emissiveColor = BABYLON.Color3.FromHexString("#FF9DCE")
@@ -114,7 +120,7 @@
             tooltipText: "This is the first tree",
             buttonData: {
               label: 'Bud',
-              verticalOffset: 0
+              verticalOffset: -20
             },
             skyAnimation: skyAnimations.day
           }, {
@@ -122,18 +128,18 @@
             leafMaterial: materials.defaultLeaf,
             tooltipText: "This is the second tree",
             buttonData: {
-              label: 'Young Tree',
-              verticalOffset: -50
+              label: 'Young',
+              verticalOffset: -70
             },
             skyAnimation: skyAnimations.night
-            
+
           }, {
             data: TREES_NUMBER_VALUES[2],
             leafMaterial: materials.overwateredLeaf,
             tooltipText: "This is the third tree",
             buttonData: {
-              label: 'Growing Tree',
-              verticalOffset: -100
+              label: 'Growing',
+              verticalOffset: -120
             },
             skyAnimation: skyAnimations.day
           }, {
@@ -141,17 +147,17 @@
             leafMaterial: materials.dryLeaf,
             tooltipText: "This is the fourth tree",
             buttonData: {
-              label: 'Overwatered Tree',
-              verticalOffset: -150
+              label: 'Overwatered',
+              verticalOffset: -170
             },
             skyAnimation: skyAnimations.night
           }, {
             data: TREES_NUMBER_VALUES[4],
-            leafMaterial: materials.cherryBlossom,
+            leafMaterial: materials.recoveredLeaf,
             tooltipText: "This is the fifth tree",
             buttonData: {
-              label: 'Recovered Tree',
-              verticalOffset: -200
+              label: 'Recovered',
+              verticalOffset: -220
             },
             skyAnimation: skyAnimations.day
           }, {
@@ -159,8 +165,8 @@
             leafMaterial: materials.cherryBlossom,
             tooltipText: "This is the sixth tree",
             buttonData: {
-              label: 'Apple Blossom Tree',
-              verticalOffset: -250
+              label: 'Cherry Blossom',
+              verticalOffset: -270
             }
           }];
 
@@ -216,7 +222,7 @@
           trees = generateTrees(treesData);
 
           trees[0].setEnabled(true);
-          
+
           camera.setTarget(trees[0]);
 
           return scene;
