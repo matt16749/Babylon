@@ -406,7 +406,6 @@
           tooltipsToHide.forEach(tooltip => {
             button.onPointerUpObservable.add(function() {
               tooltip.isVisible = false;
-              console.log('these are the things to hide', tooltipsToHide);
             });
           });
           button.onPointerUpObservable.add(function() {
@@ -601,17 +600,16 @@
           target.color = theme.color;
           target.thickness = theme.lineThickness;
           target.background = theme.background;
-          target.linkOffsetY = -130;
 
           return target;
         }
 
-        var createAttachedTooltipLine = function(height) {
+        var createAttachedTooltipLine = function(height, offset) {
           var line = new BABYLON.GUI.Line();
           line.lineWidth = 2;
           line.color = theme.color;
           line.y2 = height;
-          line.linkOffsetY = -137;
+          line.linkOffsetY = offset + 63;
 
           return line;
         }
@@ -629,7 +627,7 @@
           // Text container box
           var textBox = createBaseTextBox(textBoxWidth, textBoxHeight);
           tooltip.addControl(textBox);
-          textBox.linkOffsetY = offsetX;
+          textBox.linkOffsetX = offsetX;
           textBox.linkOffsetY = offsetY;
           textBox.scaleY = 0;
           textBox.linkWithMesh(mesh);
@@ -639,9 +637,10 @@
           textBox.addControl(text);
 
           // Line connecting target and tooltip
-          var line = createAttachedTooltipLine(lineHeight);
+          var line = createAttachedTooltipLine(lineHeight, offsetY);
           tooltip.addControl(line);
           line.linkWithMesh(mesh);
+          line.linkOffsetX = offsetX;
           line.scaleY = 0;
           line.connectedControl = textBox;
 
@@ -653,7 +652,6 @@
 
           // Create target button
           var circle = createCircleTarget(targetDiameter);
-
           var target = BABYLON.GUI.Button.CreateSimpleButton("button");
           target.width = "15px";
           target.height = "15px";
@@ -666,7 +664,9 @@
             animationGroup.reset();
             animationGroup.stop();
           });
-          target.top = -135;
+          {{!-- target.top = -135; --}}
+          target.top = offsetY + 65
+          target.left = offsetX;
           target.addControl(circle);
           tooltip.addControl(target);
 
@@ -1000,20 +1000,37 @@
           createBaseTooltip(tree5, scene, baseTooltipOffsetX, baseTooltipOffsetY, TOOLTIP_TEXT_BASE.TREE_5);
 
           // Branch tooltips
-          const attachedTooltipOffsetX = "200px";
-          const attachedTooltipOffsetY = "-200px";
+          const tree1Tooltip1OffsetX = 0;
+          const tree1Tooltip1TooltipOffsetY = -200;
+          const tree1Tooltip1 = createAttachedTooltip(tree1, scene, tree1Tooltip1OffsetX, tree1Tooltip1TooltipOffsetY, TOOLTIP_TEXT_BRANCHES.BUILD);
 
-          const tree0Tooltip = createAttachedTooltip(tree0, scene, attachedTooltipOffsetX, attachedTooltipOffsetY, TOOLTIP_TEXT_BRANCHES.TAKEOFF);
+          const tree2Tooltip1OffsetX = 0;
+          const tree2Tooltip1OffsetY = -270;
+          const tree2Tooltip1 = createAttachedTooltip(tree2, scene, tree2Tooltip1OffsetX, tree2Tooltip1OffsetY, TOOLTIP_TEXT_BRANCHES.TAKEOFF);
+
+          const tree2Tooltip2OffsetX = 100;
+          const tree2Tooltip2OffsetY = -200;
+          const tree2Tooltip2 = createAttachedTooltip(tree2, scene, tree2Tooltip2OffsetX, tree2Tooltip2OffsetY, TOOLTIP_TEXT_BRANCHES.DESIGN_COLLABORATION);
+
+          const tree3Tooltip2OffsetX = -100;
+          const tree4Tooltip2OffsetX = -200;
+          const tree2Tooltip3 = createAttachedTooltip(tree2, scene, tree3Tooltip2OffsetX, tree4Tooltip2OffsetX, TOOLTIP_TEXT_BRANCHES.MODEL_COORDINATION);
+
+          const allTooltips = [tree1Tooltip1, tree2Tooltip1, tree2Tooltip2, tree2Tooltip3];
 
           // TOOL-TIP - END //
 
           // Stage Buttons
-          createButton(tree0, 'Bud', 0, [tree1, tree2, tree3, tree4, tree5], [tree0Tooltip], [tree0Tooltip]);
-          createButton(tree1, 'Young Tree', -50, [tree0, tree2, tree3, tree4, tree5], [tree0Tooltip]);
-          createButton(tree2, 'Growing Tree', -100, [tree0, tree1, tree3, tree4, tree5], [tree0Tooltip]);
-          createButton(tree3, 'Overwatered Tree', -150, [tree0, tree1, tree2, tree4, tree5], [tree0Tooltip]);
-          createButton(tree4, 'Recovered Tree', -200, [tree0, tree1, tree2, tree3, tree5], [tree0Tooltip]);
-          createButton(tree5, 'Apple Blossom Tree', -250, [tree0, tree1, tree2, tree3, tree4], [tree0Tooltip]);
+          createButton(tree0, 'Bud', 0, [tree1, tree2, tree3, tree4, tree5], allTooltips);
+          createButton(tree1, 'Young Tree', -50, [tree0, tree2, tree3, tree4, tree5], allTooltips, [tree1Tooltip1]);
+          createButton(tree2, 'Growing Tree', -100, [tree0, tree1, tree3, tree4, tree5], allTooltips, [tree2Tooltip1, tree2Tooltip2, tree2Tooltip3]);
+          createButton(tree3, 'Overwatered Tree', -150, [tree0, tree1, tree2, tree4, tree5], allTooltips);
+          createButton(tree4, 'Recovered Tree', -200, [tree0, tree1, tree2, tree3, tree5], allTooltips);
+          createButton(tree5, 'Apple Blossom Tree', -250, [tree0, tree1, tree2, tree3, tree4], allTooltips);
+
+          allTooltips.forEach((tooltip) => {
+            tooltip.isVisible = false;
+          });
 
           return scene;
         };
