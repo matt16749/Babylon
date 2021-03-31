@@ -28,7 +28,6 @@
     <script src="javascripts/setGround.js"></script>
     <script src="javascripts/createAttachedTooltipLine.js"></script>
     <script src="javascripts/createButton.js"></script>
-    <script src="javascripts/createTooltip.js"></script>
     <script src="javascripts/createCircleTarget.js"></script>
     <script src="javascripts/createAnimationGroup.js"></script>
     <script src="javascripts/createBaseTooltipAnimation.js"></script>
@@ -212,10 +211,9 @@
               generatedTree.position.z = 0
               generatedTree.setEnabled(false);
 
-              const treeOffsetX = "175px";
-              const treeOffsetY = "-100px";
-
-              createTooltip(generatedTree, scene, treeOffsetX, treeOffsetY, tree.tooltipText);
+              const baseTooltipOffsetX = "125px";
+              const baseTooltipOffsetY = "-75px";
+              createBaseTooltip(generatedTree, scene, baseTooltipOffsetX, baseTooltipOffsetY, tree.tooltipText);
 
               createButton(index, tree.buttonData.label, tree.buttonData.verticalOffset, onClickButton);
 

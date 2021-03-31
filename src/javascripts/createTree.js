@@ -1,6 +1,7 @@
 var theme = {
   background: "#006EAF",
   color: 'white',
+  fontFamily: 'Arial',
   lineThickness: 2
 }
 
