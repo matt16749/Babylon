@@ -26,8 +26,17 @@
     <script src="javascripts/createTree.js"></script>
     <script src="javascripts/setSkyAnimation.js"></script>
     <script src="javascripts/setGround.js"></script>
+    <script src="javascripts/createAttachedTooltipLine.js"></script>
     <script src="javascripts/createButton.js"></script>
-    <script src="javascripts/createTooltip.js"></script>
+    <script src="javascripts/createCircleTarget.js"></script>
+    <script src="javascripts/createAnimationGroup.js"></script>
+    <script src="javascripts/createBaseTooltipAnimation.js"></script>
+    <script src="javascripts/createBaseText.js"></script>
+    <script src="javascripts/createBaseTextBox.js"></script>
+    <script src="javascripts/createLineAnimation.js"></script>
+    <script src="javascripts/createLabelAnimation.js"></script>
+    <script src="javascripts/createAttachedText.js"></script>
+    <script src="javascripts/createBaseTooltip.js"></script>
     <script src="javascripts/createAttachedTooltip.js"></script>
     <script src="consts.js"></script>
 
@@ -116,8 +125,9 @@
 
           const treesData = [{
             data: TREES_NUMBER_VALUES[0],
+            branches: [],
             leafMaterial: materials.defaultLeaf,
-            tooltipText: "This is the first tree",
+            tooltipText: TOOLTIP_TEXT_BASE.TREE_0,
             buttonData: {
               label: 'Bud',
               verticalOffset: -20
@@ -125,8 +135,28 @@
             skyAnimation: skyAnimations.day
           }, {
             data: TREES_NUMBER_VALUES[1],
+            branches: [
+              {
+                offsetX: 0,
+                offsetY: -200,
+                text: TOOLTIP_TEXT_BRANCHES.BUILD,
+                width: "100px"
+              },
+              {
+                offsetX: 40,
+                offsetY: -150,
+                text: TOOLTIP_TEXT_BRANCHES.DOCS,
+                width: "100px"
+              },
+              {
+                offsetX: -40,
+                offsetY: -150,
+                text: TOOLTIP_TEXT_BRANCHES.INSIGHT,
+                width: "100px"
+              }
+            ],
             leafMaterial: materials.defaultLeaf,
-            tooltipText: "This is the second tree",
+            tooltipText: TOOLTIP_TEXT_BASE.TREE_1,
             buttonData: {
               label: 'Young',
               verticalOffset: -70
@@ -135,8 +165,28 @@
 
           }, {
             data: TREES_NUMBER_VALUES[2],
+            branches: [
+              {
+                offsetX: 0,
+                offsetY: -270,
+                text: TOOLTIP_TEXT_BRANCHES.TAKEOFF,
+                width: "100px"
+              },
+              {
+                offsetX: 100,
+                offsetY: -200,
+                text: TOOLTIP_TEXT_BRANCHES.DESIGN_COLLABORATION,
+                width: "200px"
+              },
+              {
+                offsetX: -100,
+                offsetY: -200,
+                text: TOOLTIP_TEXT_BRANCHES.MODEL_COORDINATION,
+                width: "200px"
+              }
+            ],
             leafMaterial: materials.overwateredLeaf,
-            tooltipText: "This is the third tree",
+            tooltipText: TOOLTIP_TEXT_BASE.TREE_2,
             buttonData: {
               label: 'Growing',
               verticalOffset: -120
@@ -144,8 +194,9 @@
             skyAnimation: skyAnimations.day
           }, {
             data: TREES_NUMBER_VALUES[3],
+            branches: [],
             leafMaterial: materials.dryLeaf,
-            tooltipText: "This is the fourth tree",
+            tooltipText: TOOLTIP_TEXT_BASE.TREE_3,
             buttonData: {
               label: 'Overwatered',
               verticalOffset: -170
@@ -153,8 +204,9 @@
             skyAnimation: skyAnimations.night
           }, {
             data: TREES_NUMBER_VALUES[4],
+            branches: [],
             leafMaterial: materials.recoveredLeaf,
-            tooltipText: "This is the fifth tree",
+            tooltipText: TOOLTIP_TEXT_BASE.TREE_4,
             buttonData: {
               label: 'Recovered',
               verticalOffset: -220
@@ -162,23 +214,30 @@
             skyAnimation: skyAnimations.day
           }, {
             data: TREES_NUMBER_VALUES[5],
+            branches: [],
             leafMaterial: materials.cherryBlossom,
-            tooltipText: "This is the sixth tree",
+            tooltipText: TOOLTIP_TEXT_BASE.TREE_5,
             buttonData: {
               label: 'Cherry Blossom',
               verticalOffset: -270
             }
           }];
 
-
           const onClickButton = function (treeIndex) {
             trees.forEach(function(tree, index) {
               if (index === treeIndex) {
                 tree.setEnabled(true);
+                treesData[treeIndex].branches.forEach(branch => {
+                  branch.tooltip.isVisible = true;
+                });
               } else {
                 tree.setEnabled(false);
+                treesData[index].branches.forEach(branch => {
+                  branch.tooltip.isVisible = false;
+                });
               }
             });
+
             scene.stopAnimation(skybox);
             scene.beginDirectAnimation(skybox, [treesData[treeIndex].skyAnimation], 0, 100, false, 1);
           }
@@ -208,10 +267,15 @@
               generatedTree.position.z = 0
               generatedTree.setEnabled(false);
 
-              const treeOffsetX = "175px";
-              const treeOffsetY = "-100px";
+              const baseTooltipOffsetX = "125px";
+              const baseTooltipOffsetY = "-75px";
+              createBaseTooltip(generatedTree, scene, baseTooltipOffsetX, baseTooltipOffsetY, tree.tooltipText);
 
-              createTooltip(generatedTree, scene, treeOffsetX, treeOffsetY, tree.tooltipText);
+              tree.branches.forEach(branch => {
+                const branchTooltip = createAttachedTooltip(generatedTree, scene, branch.offsetX, branch.offsetY, branch.text, branch.width);
+                branch.tooltip = branchTooltip;
+                branch.tooltip.isVisible = false;
+              });
 
               createButton(index, tree.buttonData.label, tree.buttonData.verticalOffset, onClickButton);
 
