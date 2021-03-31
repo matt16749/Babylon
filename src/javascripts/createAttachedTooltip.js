@@ -1,46 +1,58 @@
-var createAttachedTooltip = function(mesh, scene, toolTipText) {
-  var tooltip = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
-  var offset = 300;
+const createAttachedTooltip = (mesh, scene, offsetX, offsetY, toolTipText, tooltipWidth) => {
+  const tooltip = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+  tooltip.isForeground = true;
+  tooltip.useInvalidateRectOptimization = false;
 
-  // shape of tooltip
-  var rect1 = new BABYLON.GUI.Rectangle();
-  rect1.width = 0.2;
-  rect1.height = "40px";
-  rect1.cornerRadius = 5;
-  rect1.color = theme.color;
-  rect1.thickness = theme.lineThickness;
-  rect1.background = theme.background;
-  tooltip.addControl(rect1);
-  rect1.linkWithMesh(mesh);
-  rect1.linkOffsetY = -offset;
+  const textBoxHeight = "40px";
+  const textBoxWidth = tooltipWidth || 0.2;
+  const targetDiameter = "15px";
+  const lineHeight = 20;
 
-  // {{!-- rect1.linkOffsetX = "60px"; --}}
+  // Text container box
+  const textBox = createBaseTextBox(textBoxWidth, textBoxHeight);
+  tooltip.addControl(textBox);
+  textBox.linkOffsetX = offsetX;
+  textBox.linkOffsetY = offsetY;
+  textBox.scaleY = 0;
+  textBox.linkWithMesh(mesh);
 
-  // text in rectangular label
-  var label = new BABYLON.GUI.TextBlock();
-  label.text = toolTipText;
-  rect1.addControl(label);
+  // Text properties
+  const text = createAttachedText(toolTipText);
+  textBox.addControl(text);
 
-  // circle target
-  var target = new BABYLON.GUI.Ellipse();
-  target.width = "40px";
-  target.height = "40px";
-  target.color = theme.color;
-  target.thickness = theme.lineThickness;
-  target.background = theme.background;
-  target.linkOffsetY = 150 - offset;
-  tooltip.addControl(target);
-  target.linkWithMesh(mesh);
-
-  // line connecting target and tooltip
-  var line = new BABYLON.GUI.Line();
-  line.lineWidth = 4;
-  line.color = theme.color;
-  line.y2 = 20;
-  line.linkOffsetY = -(offset-130);
+  // Line connecting target and tooltip
+  const line = createAttachedTooltipLine(lineHeight, offsetY);
   tooltip.addControl(line);
   line.linkWithMesh(mesh);
-  line.connectedControl = rect1;
+  line.linkOffsetX = offsetX;
+  line.scaleY = 0;
+  line.connectedControl = textBox;
 
-  return scene;
+  // Animation
+  const frameRate = 30;
+  const lineAnimation = createLineAnimation(frameRate);
+  const labelAnimation = createLabelAnimation(frameRate);
+  const animationGroup = createAnimationGroup(line, lineAnimation, textBox, labelAnimation);
+
+  // Create target button
+  const circle = createCircleTarget(targetDiameter);
+  const target = BABYLON.GUI.Button.CreateSimpleButton("button");
+  target.width = "15px";
+  target.height = "15px";
+  target.color = "transparent";
+  target.alpha = 0.5;
+  target.onPointerEnterObservable.add(function () {
+    animationGroup.speedRatio = 10;
+    animationGroup.play(false);
+  });
+  target.onPointerOutObservable.add(function () {
+    animationGroup.reset();
+    animationGroup.stop();
+  });
+  target.top = offsetY + 65
+  target.left = offsetX;
+  target.addControl(circle);
+  tooltip.addControl(target);
+
+  return target;
 };
