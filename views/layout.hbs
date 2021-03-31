@@ -388,7 +388,7 @@
           return ground;
         }
 
-        var createButton = function(tree, text, verticalOffset, treesToHide) {
+        var createButton = function(tree, text, verticalOffset, treesToHide, tooltipsToHide, tooltipsToShow) {
           // GUI
           var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
 
@@ -403,8 +403,20 @@
               hideTree.setEnabled(false);
             });
           });
+          tooltipsToHide.forEach(tooltip => {
+            button.onPointerUpObservable.add(function() {
+              tooltip.isVisible = false;
+              console.log('these are the things to hide', tooltipsToHide);
+            });
+          });
           button.onPointerUpObservable.add(function() {
             tree.setEnabled(true);
+
+            if (tooltipsToShow) {
+              tooltipsToShow.forEach(tooltip => {
+                tooltip.isVisible = true;
+              });
+            }
           });
           button.top = verticalOffset;
           button.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
@@ -637,8 +649,9 @@
           line.connectedControl = textBox;
 
           // Animation
+          // @cynthia: TODO
 
-          return scene;
+          return target;
         };
 
         var createScene = function() {
@@ -956,6 +969,10 @@
           };
 
           // Base tooltips
+          var base = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+          const baseTarget = createCircleTarget("15px");
+          base.addControl(baseTarget);
+
           createBaseTooltip(tree0, scene, baseTooltipOffsetX, baseTooltipOffsetY, TOOLTIP_TEXT_BASE.TREE_0);
           createBaseTooltip(tree1, scene, baseTooltipOffsetX, baseTooltipOffsetY, TOOLTIP_TEXT_BASE.TREE_1);
           createBaseTooltip(tree2, scene, baseTooltipOffsetX, baseTooltipOffsetY, TOOLTIP_TEXT_BASE.TREE_2);
@@ -966,17 +983,18 @@
           // Branch tooltips
           const attachedTooltipOffsetX = "200px";
           const attachedTooltipOffsetY = "-200px";
-          createAttachedTooltip(tree1, scene, attachedTooltipOffsetX, attachedTooltipOffsetY, TOOLTIP_TEXT_BRANCHES.TAKEOFF);
+
+          const tree0Tooltip = createAttachedTooltip(tree0, scene, attachedTooltipOffsetX, attachedTooltipOffsetY, TOOLTIP_TEXT_BRANCHES.TAKEOFF);
 
           // TOOL-TIP - END //
 
-          // sample buttons
-          createButton(tree0, 'Bud', 0, [tree1, tree2, tree3, tree4, tree5]);
-          createButton(tree1, 'Young Tree', -50, [tree0, tree2, tree3, tree4, tree5]);
-          createButton(tree2, 'Growing Tree', -100, [tree0, tree1, tree3, tree4, tree5]);
-          createButton(tree3, 'Overwatered Tree', -150, [tree0, tree1, tree2, tree4, tree5]);
-          createButton(tree4, 'Recovered Tree', -200, [tree0, tree1, tree2, tree3, tree5]);
-          createButton(tree5, 'Apple Blossom Tree', -250, [tree0, tree1, tree2, tree3, tree4]);
+          // Stage Buttons
+          createButton(tree0, 'Bud', 0, [tree1, tree2, tree3, tree4, tree5], [tree0Tooltip], [tree0Tooltip]);
+          createButton(tree1, 'Young Tree', -50, [tree0, tree2, tree3, tree4, tree5], [tree0Tooltip]);
+          createButton(tree2, 'Growing Tree', -100, [tree0, tree1, tree3, tree4, tree5], [tree0Tooltip]);
+          createButton(tree3, 'Overwatered Tree', -150, [tree0, tree1, tree2, tree4, tree5], [tree0Tooltip]);
+          createButton(tree4, 'Recovered Tree', -200, [tree0, tree1, tree2, tree3, tree5], [tree0Tooltip]);
+          createButton(tree5, 'Apple Blossom Tree', -250, [tree0, tree1, tree2, tree3, tree4], [tree0Tooltip]);
 
           return scene;
         };
