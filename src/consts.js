@@ -85,10 +85,12 @@ const TREES_NUMBER_VALUES = [{
 }];
 
 const TOOLTIP_TEXT_BRANCHES = {
-    BUILD: "I'm Build!",
-    TAKEOFF: "I'm Takeoff!",
-    DESIGN_COLLABORATION: "I'm Design Collaboration!",
-    MODEL_COORDINATION: "I'm Model Coordination!"
+    BUILD: "I'm Build.",
+    DESIGN_COLLABORATION: "I'm Design Collaboration.",
+    DOCS: "I'm Docs.",
+    MODEL_COORDINATION: "I'm Model Coordination.",
+    INSIGHT: "I'm Insight.",
+    TAKEOFF: "I'm Takeoff.",
 };
 
 const TOOLTIP_TEXT_BASE = {
