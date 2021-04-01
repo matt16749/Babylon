@@ -12,7 +12,6 @@ const createBaseText = (text) => {
   baseText.paddingBottom = "20px";
   baseText.paddingLeft = "20px";
   baseText.paddingRight = "20px";
-  baseText.rotation = Math.PI;
 
   return baseText;
 };
