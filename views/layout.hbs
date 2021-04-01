@@ -46,8 +46,6 @@
       <canvas id="renderCanvas" touch-action="none"></canvas>
       <script>
         var createScene = function() {
-          // TODO: Start here for initialization
-
           // Initialize Scene
           const scene = new BABYLON.Scene(engine);
 
@@ -58,22 +56,38 @@
             "light",
             new BABYLON.Vector3(0, 1, 0)
           );
-          light.intensity = 1;
 
-          setGround();
+          // Create Materials
 
-           var skyboxMaterial = new BABYLON.SkyMaterial("skyMaterial");
-          skyboxMaterial.backFaceCulling = false;
+          //Skybox Materials
+          const skyboxMaterials = {};
 
-          var skybox = BABYLON.Mesh.CreateBox("skyBox", 1000.0);
-          skybox.material = skyboxMaterial;
+          const generateSkyMaterial = function (name,values) {
+            skyboxMaterials[name] = new BABYLON.SkyMaterial("skyMaterial");
+            skyboxMaterials[name].backFaceCulling = false;
+            skyboxMaterials[name].turbidity = values.turbidity,
+            skyboxMaterials[name].luminance = values.luminance,
+            skyboxMaterials[name].rayleigh = values.rayleigh,
+            skyboxMaterials[name].inclination = values.inclination,
+            skyboxMaterials[name].mieCoefficient = values.mieCoefficient,
+            skyboxMaterials[name].mieDirectionalG = values.mieDirectionalG
+            skyboxMaterials[name].azimuth = values.azimuth
+          }
 
-          const skyAnimations = {
-            day: setSkyAnimation("Day", "material.inclination", skyboxMaterial.inclination, 0),
-            night: setSkyAnimation("Night", "material.inclination", skyboxMaterial.inclination, -0.5)
-          };
+          generateSkyMaterial('earlyMorning', SKY_MATERIALS_DATA.earlyMorning);
+          generateSkyMaterial('morning', SKY_MATERIALS_DATA.morning);
+          generateSkyMaterial('noon', SKY_MATERIALS_DATA.noon);
+          generateSkyMaterial('earlyAfternoon', SKY_MATERIALS_DATA.earlyAfternoon);
+          generateSkyMaterial('afternoon', SKY_MATERIALS_DATA.afternoon);
+          generateSkyMaterial('sunset', SKY_MATERIALS_DATA.sunset);
 
-          //Set materials
+          skyboxMaterials.cloudy = new BABYLON.StandardMaterial("skyBox", scene);
+          skyboxMaterials.cloudy.backFaceCulling = false;
+          skyboxMaterials.cloudy.reflectionTexture = new BABYLON.CubeTexture("assets/cloudy", scene);
+          skyboxMaterials.cloudy.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE;
+          skyboxMaterials.cloudy.diffuseColor = new BABYLON.Color3(0, 0, 0);
+          skyboxMaterials.cloudy.specularColor = new BABYLON.Color3(0, 0, 0);
+
           const materials = {};
 
           materials.defaultBark = new BABYLON.StandardMaterial("defaultBark", scene);
@@ -104,22 +118,28 @@
 
           materials.dryLeaf.diffuseColor = BABYLON.Color3.FromHexString("#B69063")
 
-          materials.cherryBlossom = new BABYLON.StandardMaterial(
-              "cherryBlossomMaterial",
-              scene
-          );
-
           materials.recoveredLeaf = new BABYLON.StandardMaterial(
-            "leafMaterial",
+            "recoveredLeaf",
             scene
           );
           materials.recoveredLeaf.diffuseColor = BABYLON.Color3.FromHexString("#D5DB7D")
 
+          materials.cherryBlossom = new BABYLON.StandardMaterial(
+              "cherryBlossomMaterial",
+              scene
+          );
           materials.cherryBlossom.diffuseColor = BABYLON.Color3.FromHexString("#E84396")
           materials.cherryBlossom.specularColor = BABYLON.Color3.FromHexString("#E84396")
           materials.cherryBlossom.emissiveColor = BABYLON.Color3.FromHexString("#FF9DCE")
           materials.cherryBlossom.ambientColor = BABYLON.Color3.FromHexString("#FF9DCE")
 
+           setGround();
+          
+          //const skyAnimations = {
+          //  day: setSkyAnimation("Day", "material.inclination", skyboxMaterial.inclination, 0),
+          //  night: setSkyAnimation("Night", "material.inclination", skyboxMaterial.inclination, -0.5)
+          //};
+          
           //Set trees data
           let trees = [];
 
@@ -132,7 +152,7 @@
               label: 'Bud',
               verticalOffset: -20
             },
-            skyAnimation: skyAnimations.day
+            skyMaterial: skyboxMaterials.earlyMorning
           }, {
             data: TREES_NUMBER_VALUES[1],
             branches: [
@@ -161,8 +181,7 @@
               label: 'Young',
               verticalOffset: -70
             },
-            skyAnimation: skyAnimations.night
-
+            skyMaterial: skyboxMaterials.morning
           }, {
             data: TREES_NUMBER_VALUES[2],
             branches: [
@@ -191,7 +210,7 @@
               label: 'Growing',
               verticalOffset: -120
             },
-            skyAnimation: skyAnimations.day
+            skyMaterial: skyboxMaterials.noon
           }, {
             data: TREES_NUMBER_VALUES[3],
             branches: [],
@@ -201,7 +220,7 @@
               label: 'Overwatered',
               verticalOffset: -170
             },
-            skyAnimation: skyAnimations.night
+            skyMaterial: skyboxMaterials.cloudy,
           }, {
             data: TREES_NUMBER_VALUES[4],
             branches: [],
@@ -211,7 +230,7 @@
               label: 'Recovered',
               verticalOffset: -220
             },
-            skyAnimation: skyAnimations.day
+            skyMaterial: skyboxMaterials.afternoon
           }, {
             data: TREES_NUMBER_VALUES[5],
             branches: [],
@@ -220,8 +239,13 @@
             buttonData: {
               label: 'Cherry Blossom',
               verticalOffset: -270
-            }
+            },
+            skyMaterial: skyboxMaterials.sunset
           }];
+
+           //Create skybox
+          const skybox = BABYLON.MeshBuilder.CreateBox("skyBox", {size:1000.0}, scene);
+          skybox.material = skyboxMaterials.earlyMorning;
 
           const onClickButton = function (treeIndex) {
             trees.forEach(function(tree, index) {
@@ -238,10 +262,13 @@
               }
             });
 
-            scene.stopAnimation(skybox);
-            scene.beginDirectAnimation(skybox, [treesData[treeIndex].skyAnimation], 0, 100, false, 1);
+            //scene.stopAnimation(skybox);
+            //scene.beginDirectAnimation(skybox, [treesData[treeIndex].skyAnimation], 0, 100, false, 1);
+
+            skybox.material = treesData[treeIndex].skyMaterial;
           }
 
+           
           const generateTrees = function(treesData) {
             return treesData.map(function(tree, index) {
               const generatedTree = createTree(
