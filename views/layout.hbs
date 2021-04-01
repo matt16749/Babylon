@@ -38,6 +38,7 @@
     <script src="javascripts/createAttachedText.js"></script>
     <script src="javascripts/createBaseTooltip.js"></script>
     <script src="javascripts/createAttachedTooltip.js"></script>
+    <script src="javascripts/changeSky.js"></script>
     <script src="consts.js"></script>
 
   </head>
@@ -57,13 +58,15 @@
             new BABYLON.Vector3(0, 1, 0)
           );
 
+          //scene.debugLayer.show();
+
           // Create Materials
 
           //Skybox Materials
           const skyboxMaterials = {};
 
           const generateSkyMaterial = function (name,values) {
-            skyboxMaterials[name] = new BABYLON.SkyMaterial("skyMaterial");
+            skyboxMaterials[name] = new BABYLON.SkyMaterial(name);
             skyboxMaterials[name].backFaceCulling = false;
             skyboxMaterials[name].turbidity = values.turbidity,
             skyboxMaterials[name].luminance = values.luminance,
@@ -134,12 +137,7 @@
           materials.cherryBlossom.ambientColor = BABYLON.Color3.FromHexString("#FF9DCE")
 
            setGround();
-          
-          //const skyAnimations = {
-          //  day: setSkyAnimation("Day", "material.inclination", skyboxMaterial.inclination, 0),
-          //  night: setSkyAnimation("Night", "material.inclination", skyboxMaterial.inclination, -0.5)
-          //};
-          
+
           //Set trees data
           let trees = [];
 
@@ -261,11 +259,7 @@
                 });
               }
             });
-
-            //scene.stopAnimation(skybox);
-            //scene.beginDirectAnimation(skybox, [treesData[treeIndex].skyAnimation], 0, 100, false, 1);
-
-            skybox.material = treesData[treeIndex].skyMaterial;
+            changeSky(skybox, treesData[treeIndex].skyMaterial, scene)
           }
 
            
