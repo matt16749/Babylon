@@ -101,3 +101,5 @@ var TOOLTIP_TEXT_BASE = {
   TREE_4: "Thank you for listening. The right amount of water added soil, bug fixing all really helped. Now I just need some time to recover and keep up the growth.",
   TREE_5: "Thank you for taking care of me. Let's keep up the structured process. I'm so proud to be the strongest and most fruitful tree in the field."
 };
+var TOOLTIP_TIMEOUT = 2000;
+var FRAME_RATE = 30;

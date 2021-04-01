@@ -123,8 +123,16 @@
           //Set trees data
           let trees = [];
 
+          const baseTooltipOffset = {
+            baseTooltipOffsetX: -350,
+            baseTooltipOffsetY: -125
+          };
+
           const treesData = [{
             data: TREES_NUMBER_VALUES[0],
+            baseTooltipOffsetX: 0,
+            baseTooltipOffsetY: 100,
+            baseTooltipHeight: "75px",
             branches: [],
             leafMaterial: materials.defaultLeaf,
             tooltipText: TOOLTIP_TEXT_BASE.TREE_0,
@@ -134,7 +142,9 @@
             },
             skyAnimation: skyAnimations.day
           }, {
+            ...baseTooltipOffset,
             data: TREES_NUMBER_VALUES[1],
+            baseTooltipHeight: "75px",
             branches: [
               {
                 offsetX: 0,
@@ -162,9 +172,10 @@
               verticalOffset: -70
             },
             skyAnimation: skyAnimations.night
-
           }, {
+            ...baseTooltipOffset,
             data: TREES_NUMBER_VALUES[2],
+            baseTooltipHeight: "75px",
             branches: [
               {
                 offsetX: 0,
@@ -193,7 +204,9 @@
             },
             skyAnimation: skyAnimations.day
           }, {
+            ...baseTooltipOffset,
             data: TREES_NUMBER_VALUES[3],
+            baseTooltipHeight: "120px",
             branches: [],
             leafMaterial: materials.dryLeaf,
             tooltipText: TOOLTIP_TEXT_BASE.TREE_3,
@@ -203,6 +216,7 @@
             },
             skyAnimation: skyAnimations.night
           }, {
+            ...baseTooltipOffset,
             data: TREES_NUMBER_VALUES[4],
             branches: [],
             leafMaterial: materials.recoveredLeaf,
@@ -213,6 +227,7 @@
             },
             skyAnimation: skyAnimations.day
           }, {
+            ...baseTooltipOffset,
             data: TREES_NUMBER_VALUES[5],
             branches: [],
             leafMaterial: materials.cherryBlossom,
@@ -227,11 +242,17 @@
             trees.forEach(function(tree, index) {
               if (index === treeIndex) {
                 tree.setEnabled(true);
+                treesData[treeIndex].baseTooltip.isVisible = true;
                 treesData[treeIndex].branches.forEach(branch => {
                   branch.tooltip.isVisible = true;
                 });
+
+                setTimeout(function() {
+                  scene.beginAnimation(treesData[treeIndex].baseTooltip, 0, 60, false);
+                }, TOOLTIP_TIMEOUT);
               } else {
                 tree.setEnabled(false);
+                treesData[index].baseTooltip.isVisible = false;
                 treesData[index].branches.forEach(branch => {
                   branch.tooltip.isVisible = false;
                 });
@@ -267,9 +288,23 @@
               generatedTree.position.z = 0
               generatedTree.setEnabled(false);
 
-              const baseTooltipOffsetX = "125px";
-              const baseTooltipOffsetY = "-75px";
-              createBaseTooltip(generatedTree, scene, baseTooltipOffsetX, baseTooltipOffsetY, tree.tooltipText);
+              tree.baseTooltip = createBaseTooltip(
+                generatedTree,
+                scene,
+                tree.baseTooltipOffsetX,
+                tree.baseTooltipOffsetY,
+                tree.tooltipText,
+                tree.baseTooltipHeight
+              );
+
+              if (index === 0) {
+                tree.baseTooltip.isVisible = true;
+                setTimeout(function() {
+                  scene.beginAnimation(tree.baseTooltip, 0, FRAME_RATE * 2, false);
+                }, TOOLTIP_TIMEOUT);
+              } else {
+                tree.baseTooltip.isVisible = false;
+              }
 
               tree.branches.forEach(branch => {
                 const branchTooltip = createAttachedTooltip(generatedTree, scene, branch.offsetX, branch.offsetY, branch.text, branch.width);

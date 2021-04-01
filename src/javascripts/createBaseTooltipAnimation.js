@@ -1,6 +1,6 @@
 var createBaseTooltipAnimation = (scene, tooltip) => {
   const actionManager = new BABYLON.ActionManager(scene);
-  const frameRate = 30;
+  const frameRate = FRAME_RATE;
 
   const scaleXAnimation = new BABYLON.Animation("myAnimation", "scaleX", frameRate * 4, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
   const scaleYAnimation = new BABYLON.Animation("myAnimation", "scaleY", frameRate * 4, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
@@ -17,21 +17,16 @@ var createBaseTooltipAnimation = (scene, tooltip) => {
   // Ending position
   keys.push({
     frame: frameRate,
-    value: -1
+    value: 1
   });
 
-  scaleXAnimation.setKeys(keys);
-  scaleYAnimation.setKeys(keys);
   tooltip.animations = [];
-  tooltip.animations.push(scaleXAnimation);
-  tooltip.animations.push(scaleYAnimation);
 
-  actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnPointerOverTrigger, function(){
-    scene.beginAnimation(tooltip, 0, frameRate, false);
-  }));
-  actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnPointerOutTrigger, function(){
-    scene.beginAnimation(tooltip, frameRate, 0, false);
-  }));
+  scaleXAnimation.setKeys(keys);
+  tooltip.animations.push(scaleXAnimation);
+
+  scaleYAnimation.setKeys(keys);
+  tooltip.animations.push(scaleYAnimation);
 
   return actionManager;
 };

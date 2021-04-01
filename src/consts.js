@@ -107,3 +107,6 @@ const TOOLTIP_TEXT_BASE = {
     TREE_5:
       "Thank you for taking care of me. Let's keep up the structured process. I'm so proud to be the strongest and most fruitful tree in the field."
 };
+
+const TOOLTIP_TIMEOUT = 2000;
+const FRAME_RATE = 30;

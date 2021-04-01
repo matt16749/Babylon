@@ -5,7 +5,7 @@ const createBaseTextBox = (width, height) => {
   textBox.thickness = theme.lineThickness;
   textBox.background = theme.background;
   textBox.cornerRadius = 5;
-  textBox.alpha = 0.8;
+  textBox.alpha = 1;
 
   return textBox;
 };
