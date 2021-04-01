@@ -84,6 +84,63 @@ const TREES_NUMBER_VALUES = [{
     leafWHRatio: 0.5
 }];
 
+const SKY_MATERIALS_DATA = {
+    earlyMorning: {
+      turbidity: 2,
+      luminance: 0.2,
+      rayleigh: 3,
+      inclination: 0.47,
+      mieCoefficient: 0.05,
+      mieDirectionalG: 0.9999,
+      azimuth: 0.25
+    },
+    morning: {
+      turbidity: 2,
+      luminance: 0.2,
+      rayleigh: 3,
+      inclination: 0.44,
+      mieCoefficient: 0.05,
+      mieDirectionalG: 0.9999,
+      azimuth: 0.25
+    },
+    noon: {
+      turbidity: 2,
+      luminance: 0.3,
+      rayleigh: 1,
+      inclination: 0,
+      mieCoefficient: 0.008,
+      mieDirectionalG: 0.9999,
+      azimuth: 0.25
+    },
+    earlyAfternoon: {
+      turbidity: 2,
+      luminance: 0.24,
+      rayleigh: 1,
+      inclination: 0,
+      mieCoefficient: 0.008,
+      mieDirectionalG: 0.9999,
+      azimuth: 0.36
+    },
+    afternoon: {
+      turbidity: 2,
+      luminance: 0.24,
+      rayleigh: 1,
+      inclination: 0,
+      mieCoefficient: 0.008,
+      mieDirectionalG: 0.9999,
+      azimuth: 0.464
+    },
+    sunset: {
+      turbidity: 10,
+      luminance: 0.3,
+      rayleigh: 2,
+      inclination: 0,
+      mieCoefficient: 0.005,
+      mieDirectionalG: 0.9999,
+      azimuth: 0.4939
+    }
+};
+
 const TOOLTIP_TEXT_BRANCHES = {
     BUILD: "I'm Build.",
     DESIGN_COLLABORATION: "I'm Design Collaboration.",
