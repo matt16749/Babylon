@@ -16,4 +16,6 @@ var createButton = function(treeIndex, text, verticalOffset, onClickButton) {
    button.onPointerUpObservable.add(function () {
      onClickButton(treeIndex);
    });
+
+   return button;
 }

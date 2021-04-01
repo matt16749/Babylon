@@ -141,8 +141,16 @@
           //Set trees data
           let trees = [];
 
+          const baseTooltipOffset = {
+            baseTooltipOffsetX: -350,
+            baseTooltipOffsetY: -125
+          };
+
           const treesData = [{
             data: TREES_NUMBER_VALUES[0],
+            baseTooltipOffsetX: 0,
+            baseTooltipOffsetY: 100,
+            baseTooltipHeight: "75px",
             branches: [],
             leafMaterial: materials.defaultLeaf,
             tooltipText: TOOLTIP_TEXT_BASE.TREE_0,
@@ -152,7 +160,9 @@
             },
             skyMaterial: skyboxMaterials.earlyMorning
           }, {
+            ...baseTooltipOffset,
             data: TREES_NUMBER_VALUES[1],
+            baseTooltipHeight: "75px",
             branches: [
               {
                 offsetX: 0,
@@ -181,7 +191,9 @@
             },
             skyMaterial: skyboxMaterials.morning
           }, {
+            ...baseTooltipOffset,
             data: TREES_NUMBER_VALUES[2],
+            baseTooltipHeight: "75px",
             branches: [
               {
                 offsetX: 0,
@@ -210,7 +222,9 @@
             },
             skyMaterial: skyboxMaterials.noon
           }, {
+            ...baseTooltipOffset,
             data: TREES_NUMBER_VALUES[3],
+            baseTooltipHeight: "120px",
             branches: [],
             leafMaterial: materials.dryLeaf,
             tooltipText: TOOLTIP_TEXT_BASE.TREE_3,
@@ -220,6 +234,7 @@
             },
             skyMaterial: skyboxMaterials.cloudy,
           }, {
+            ...baseTooltipOffset,
             data: TREES_NUMBER_VALUES[4],
             branches: [],
             leafMaterial: materials.recoveredLeaf,
@@ -230,6 +245,7 @@
             },
             skyMaterial: skyboxMaterials.afternoon
           }, {
+            ...baseTooltipOffset,
             data: TREES_NUMBER_VALUES[5],
             branches: [],
             leafMaterial: materials.cherryBlossom,
@@ -249,14 +265,27 @@
             trees.forEach(function(tree, index) {
               if (index === treeIndex) {
                 tree.setEnabled(true);
+                treesData[treeIndex].baseTooltip.isVisible = true;
                 treesData[treeIndex].branches.forEach(branch => {
                   branch.tooltip.isVisible = true;
                 });
+                treesData[treeIndex].button.color = theme.background;
+                treesData[treeIndex].button.background = theme.color;
+
+                setTimeout(function() {
+                  scene.beginAnimation(treesData[treeIndex].baseTooltip, 0, 60, false);
+                }, TOOLTIP_TIMEOUT);
               } else {
                 tree.setEnabled(false);
+                treesData[index].baseTooltip.isVisible = false;
                 treesData[index].branches.forEach(branch => {
                   branch.tooltip.isVisible = false;
                 });
+
+                treesData[index].baseTooltip.scaleX = 0;
+                treesData[index].baseTooltip.scaleY = 0;
+                treesData[index].button.color = theme.color;
+                treesData[index].button.background = theme.background;
               }
             });
             changeSky(skybox, treesData[treeIndex].skyMaterial, scene)
@@ -288,9 +317,14 @@
               generatedTree.position.z = 0
               generatedTree.setEnabled(false);
 
-              const baseTooltipOffsetX = "125px";
-              const baseTooltipOffsetY = "-75px";
-              createBaseTooltip(generatedTree, scene, baseTooltipOffsetX, baseTooltipOffsetY, tree.tooltipText);
+              tree.baseTooltip = createBaseTooltip(
+                generatedTree,
+                scene,
+                tree.baseTooltipOffsetX,
+                tree.baseTooltipOffsetY,
+                tree.tooltipText,
+                tree.baseTooltipHeight
+              );
 
               tree.branches.forEach(branch => {
                 const branchTooltip = createAttachedTooltip(generatedTree, scene, branch.offsetX, branch.offsetY, branch.text, branch.width);
@@ -298,7 +332,19 @@
                 branch.tooltip.isVisible = false;
               });
 
-              createButton(index, tree.buttonData.label, tree.buttonData.verticalOffset, onClickButton);
+              const button = createButton(index, tree.buttonData.label, tree.buttonData.verticalOffset, onClickButton);
+              tree.button = button;
+
+              if (index === 0) {
+                tree.baseTooltip.isVisible = true;
+                setTimeout(function() {
+                  scene.beginAnimation(tree.baseTooltip, 0, FRAME_RATE * 2, false);
+                }, TOOLTIP_TIMEOUT);
+                tree.button.color = theme.background;
+                tree.button.background = theme.color;
+              } else {
+                tree.baseTooltip.isVisible = false;
+              }
 
               return generatedTree;
             });
