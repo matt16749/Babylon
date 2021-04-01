@@ -246,6 +246,8 @@
                 treesData[treeIndex].branches.forEach(branch => {
                   branch.tooltip.isVisible = true;
                 });
+                treesData[treeIndex].button.color = theme.background;
+                treesData[treeIndex].button.background = theme.color;
 
                 setTimeout(function() {
                   scene.beginAnimation(treesData[treeIndex].baseTooltip, 0, 60, false);
@@ -259,6 +261,8 @@
 
                 treesData[index].baseTooltip.scaleX = 0;
                 treesData[index].baseTooltip.scaleY = 0;
+                treesData[index].button.color = theme.color;
+                treesData[index].button.background = theme.background;
               }
             });
 
@@ -300,22 +304,25 @@
                 tree.baseTooltipHeight
               );
 
-              if (index === 0) {
-                tree.baseTooltip.isVisible = true;
-                setTimeout(function() {
-                  scene.beginAnimation(tree.baseTooltip, 0, FRAME_RATE * 2, false);
-                }, TOOLTIP_TIMEOUT);
-              } else {
-                tree.baseTooltip.isVisible = false;
-              }
-
               tree.branches.forEach(branch => {
                 const branchTooltip = createAttachedTooltip(generatedTree, scene, branch.offsetX, branch.offsetY, branch.text, branch.width);
                 branch.tooltip = branchTooltip;
                 branch.tooltip.isVisible = false;
               });
 
-              createButton(index, tree.buttonData.label, tree.buttonData.verticalOffset, onClickButton);
+              const button = createButton(index, tree.buttonData.label, tree.buttonData.verticalOffset, onClickButton);
+              tree.button = button;
+
+              if (index === 0) {
+                tree.baseTooltip.isVisible = true;
+                setTimeout(function() {
+                  scene.beginAnimation(tree.baseTooltip, 0, FRAME_RATE * 2, false);
+                }, TOOLTIP_TIMEOUT);
+                tree.button.color = theme.background;
+                tree.button.background = theme.color;
+              } else {
+                tree.baseTooltip.isVisible = false;
+              }
 
               return generatedTree;
             });
